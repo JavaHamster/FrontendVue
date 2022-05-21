@@ -1,12 +1,17 @@
 <template>
-  <div>
-      <h1>{{hello}}</h1>
-      <div class="play-ground"></div>
-  </div>
+    <div>
+        <h1>{{hello}}</h1>
+        <div class="play-ground"></div>
+        <EditorMonaco/>
+    </div>
 </template>
 
 <script>
+import EditorMonaco from "../components/EditorMonaco.vue"
 export default {
+components: {
+    EditorMonaco
+},
 props : {
     
 },
@@ -19,7 +24,7 @@ data() {
             height: 10,
             size : null
         },
-        playGround : "10\n10\n##        \n>         \n *        \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n"
+        playGround : "10\n10\n##        \n >        \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n"
     }
     }
 },
@@ -44,11 +49,20 @@ methods : {
         }
 
         console.table(playGround)
-        console.log(playfields)
+
+        let color = "white"
         for(let i = 0; i < this.terrain.dimension.height; i++){
             const currentRow = Array.from(playfields).slice(i*this.terrain.dimension.width, (this.terrain.dimension.width*(i+1)));
-            for(let j = 0; j < playfields.length; j++){
-                currentRow[j].innerHTML = typeof playGround[i][j] != undefined? playGround[i][j] : " "
+            for(let j = 0; j < currentRow.length; j++){
+                if(typeof playGround[i][j] == 'undefined' || playGround[i][j] == ' ')
+                    color = "white"
+                else if(playGround[i][j] == "#")
+                    color = "black"
+                else if(playGround[i][j] == '>')
+                    color = "blue"
+                else if(playGround[i][j] == '*')
+                    color = "brown"
+                currentRow[j].style.background = color
             }
 
         }
@@ -64,7 +78,6 @@ methods : {
         for(let i = 0; i < this.terrain.dimension.size; i++){
             let div = document.createElement("div")
             div.classList.add("play-field")
-            div.innerHTML = i;
             playGround_HTML.appendChild(div)
         }
     }
