@@ -32,6 +32,7 @@ mounted() {
 },
 methods : {
     loadEntities : function() {
+
         const terLines = this.terrain.playGround.split("\n")
         const playfields = this.getPlayGroundArray()
         var playGround = []
@@ -43,11 +44,14 @@ methods : {
         }
 
         console.table(playGround)
-        for(let i = 0; i < playfield.length; i++)[
-            playGround[i].forEach(element => {
-                
-            })
-        ]
+        console.log(playfields)
+        for(let i = 0; i < this.terrain.dimension.height; i++){
+            const currentRow = Array.from(playfields).slice(i*this.terrain.dimension.width, (this.terrain.dimension.width*(i+1)));
+            for(let j = 0; j < playfields.length; j++){
+                currentRow[j].innerHTML = typeof playGround[i][j] != undefined? playGround[i][j] : " "
+            }
+
+        }
     },
     getPlayGroundArray : function () {
         const playGround_HTML = document.querySelector(".play-ground")
@@ -60,7 +64,7 @@ methods : {
         for(let i = 0; i < this.terrain.dimension.size; i++){
             let div = document.createElement("div")
             div.classList.add("play-field")
-            
+            div.innerHTML = i;
             playGround_HTML.appendChild(div)
         }
     }
