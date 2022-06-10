@@ -22,6 +22,10 @@ export default {
           paragraphs.forEach(element => {
               if(element.innerText.trim().length != 0)
                 toReturn.push(element.innerText.trim())
+              else {
+                console.error("Enter code!")
+                return; 
+              }
           })
 
           console.log(toReturn.join("\n"))
