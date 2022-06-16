@@ -4,8 +4,7 @@ export default class Game{
     renderDelay = 500
     corns = []
     player = {
-        x: 2,
-        y: 1,
+        position: new Vector2D(2, 1),
         direction: 0, //0: up | 3: right | 2: down | 1: left
         currentFieldIndex: 11,
         corn: 0
@@ -62,7 +61,7 @@ export default class Game{
                     color = "player"
                 } else if(playGround_arr[i][j] == '*'){
                     color = "corn"
-                    this.corns.push(new Corn(i, j, 1))
+                    this.corns.push(new Corn(new Vector2D(i, j), 1))
                     currentRow[j].innerText = 1;
                 }
                 currentRow[j].classList = "play-field " + color
@@ -73,6 +72,7 @@ export default class Game{
     }
 
     createPlayGround() {
+        console.log(this.player.position)
         for(let i = 0; i < this.terrain.dimension.size; i++){
             let div = document.createElement("div")
             div.classList.add("play-field")
@@ -97,7 +97,7 @@ export default class Game{
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        response = {"0":"2","1":"2","2":"1","3":"1","4":"1","5":"1","finished":"working"}
+        response = {"0":"2","1":"2","2":"1","3":"4","finished":"working"}
         let steps = this.getSteps(response)
         console.log(Object.values(response))
 
@@ -112,10 +112,16 @@ export default class Game{
                         this.player.direction = (this.player.direction%4 == 0)? 0 : this.player.direction
                         this.updatePlayer()
                         break;
+                    case "4":
+                        this.collectCorn(this.player.position.x, this.player.position.y)
+                        break;
                 }
             }, index * this.renderDelay)
             
         });
+        setTimeout(() => {
+            this.playField[this.player.currentFieldIndex].innerText = this.player.corn
+        }, (Object.keys(response).length-1)*this.renderDelay);
         console.log("Direction: " + this.getPlayerDirection())
     }
 
@@ -123,32 +129,39 @@ export default class Game{
         let currentDirection = this.getPlayerDirection()
         switch(currentDirection){
             case "up":
-                this.player.y--
+                this.player.position.y--
                 break
             case "left":
-                this.player.x--
+                this.player.position.x--
                 break
             case "down":
-                this.player.y++
+                this.player.position.y++
                 break
             case "right":
-                this.player.x++
+                this.player.position.x++
                 break
         }
 
         this.updatePlayer()
     }
 
+    getFieldIndex = function(position, height){
+        let h = height || this.terrain.dimension.height
+        let field = 0
+        field += position.x
+        field += h*position.y
+
+        console.log("FIELD: ", h, field, position.x, position.y)
+        return field
+    }
+
     updatePlayer(){
         let height = this.terrain.dimension.height;
-        let x = this.player.x
-        let y = this.player.y
+        let x = this.player.position.x
+        let y = this.player.position.y
 
-        let playerField = 0
-
-        playerField += x
-        playerField += height*y
-
+        let playerField = this.getFieldIndex(new Vector2D(x, y))
+        
         if(this.player.currentFieldIndex != playerField){
             this.playField[this.player.currentFieldIndex].classList.remove("player");
             this.playField[playerField].classList.add("player")
@@ -156,15 +169,34 @@ export default class Game{
         }
 
         this.playField[this.player.currentFieldIndex].setAttribute("direction", this.getPlayerDirection())
-        
+    }
+
+    collectCorn = function (postion) {
+        console.log("körner: ", this.corns.length)
+        this.corns.forEach(element => {
+            if(element.position = postion && element.count > 0){
+                this.player.corn++
+                element.count --;
+                if(element.count == 0){
+                    let field = this.getFieldIndex(element.position)
+                    console.log(field)
+                    this.playField[field].classList.remove("corn")
+                }
+            }
+        })
     }
 }
 
 class Corn{
-    constructor(x, y, count){
-        this.x = x
-        this.y = y
+    constructor(position ,count){
+        this.position = position
         this.count = count
     }
+}
 
+class Vector2D{
+    constructor(x, y){
+        this.x = x || 0
+        this.y = y || 0
+    }
 }

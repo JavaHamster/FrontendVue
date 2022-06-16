@@ -75,14 +75,14 @@ $player-direction-color: black;
     width: 50px;
     height: 50px;
     box-sizing: border-box;
-    &.corn{
-        background: brown;
-        color: white;
+    color: white;
         font-weight: bold;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
+    &.corn{
+        background: brown;
     }
     &.wall {
         background: black;
