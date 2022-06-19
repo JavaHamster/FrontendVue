@@ -48,7 +48,6 @@ mounted() {
 },
 methods : {
     start(){
-        console.log("hello")
         if(this.game == "" || typeof this.game == 'undefined'){
             console.error("Game object null!")
             return
