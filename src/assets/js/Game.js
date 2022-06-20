@@ -1,5 +1,6 @@
 /*eslint-disable */
 
+
 export default class Game{
     renderDelay = 500
     corns = []
@@ -7,7 +8,7 @@ export default class Game{
         position: new Vector2D(2, 1),
         direction: 0, //0: up | 3: right | 2: down | 1: left
         currentFieldIndex: 11,
-        corn: 0
+        corn: 1
     }
 
     constructor(terrain, playGround, playField, player){
@@ -20,7 +21,8 @@ export default class Game{
         this.getSteps = this.getSteps.bind(this)
         this.getPlayerDirection = this.getPlayerDirection.bind(this)
         this.moveForward = this.moveForward.bind(this)
-
+        
+        this.updateField
         console.log("Direction : " + this.getPlayerDirection())
     }
 
@@ -61,7 +63,8 @@ export default class Game{
                     color = "player"
                 } else if(playGround_arr[i][j] == '*'){
                     color = "corn"
-                    this.corns.push(new Corn(new Vector2D(i, j), 1))
+                    let corn = new Vector2D(i,j)
+                    this.corns.push(new Corn(corn, 1))
                     currentRow[j].innerText = 1;
                 }
                 currentRow[j].classList = "play-field " + color
@@ -97,7 +100,7 @@ export default class Game{
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        response = {"0":"2","1":"2","2":"1","3":"4","finished":"working"}
+        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"}
         let steps = this.getSteps(response)
         console.log(Object.values(response))
 
@@ -112,8 +115,11 @@ export default class Game{
                         this.player.direction = (this.player.direction%4 == 0)? 0 : this.player.direction
                         this.updatePlayer()
                         break;
+                    case "3":
+                        this.storeCorn(this.player.position)
+                        break;
                     case "4":
-                        this.collectCorn(this.player.position.x, this.player.position.y)
+                        this.collectCorn(new Vector2D(this.player.position.x, this.player.position.y))
                         break;
                 }
             }, index * this.renderDelay)
@@ -165,38 +171,75 @@ export default class Game{
         if(this.player.currentFieldIndex != playerField){
             this.playField[this.player.currentFieldIndex].classList.remove("player");
             this.playField[playerField].classList.add("player")
+            
             this.player.currentFieldIndex = playerField
         }
 
         this.playField[this.player.currentFieldIndex].setAttribute("direction", this.getPlayerDirection())
+
     }
 
-    collectCorn = function (postion) {
-        console.log("körner: ", this.corns.length)
-        this.corns.forEach(element => {
-            if(element.position = postion && element.count > 0){
+    updateField() {
+        console.table(this.corns)
+        this.corns.forEach((element, index) => {
+            if(element.count == 0){
+                this.playField[this.getFieldIndex(element.position)].classList.remove("corn")
+                this.corns.splice(index, 1)
+            }
+        })
+
+        console.table(this.corns)
+
+    }
+
+    collectCorn = function (position) {
+        this.corns.forEach((element, index) => {
+            if(element.position.is(position) && element.count > 0){
                 this.player.corn++
                 element.count --;
                 if(element.count == 0){
                     let field = this.getFieldIndex(element.position)
                     console.log(field)
                     this.playField[field].classList.remove("corn")
+                    this.corns.splice(index, 1)
                 }
             }
         })
     }
+    storeCorn(position) {
+        console.warn(this.corns)
+        let cornField = this.getFieldIndex(position)
+        let corn = this.corns.find(e => e.position == position)
+        console.error(typeof corn )
+                       
+        if(corn != NaN || corn != null || typeof corn === 'undefined'){
+            this.playField[cornField].innerText = corn.count
+            alert("kdlajf")
+            return;
+        }
+
+        // this.corns.push(new Corn(position))
+        // this.playField[cornField].classList.add("corn")
+        // this.playField[cornField].innerText = "1"
+    }
+
 }
 
 class Corn{
-    constructor(position ,count){
+    constructor(position=new Vector2D() ,count=1){
         this.position = position
         this.count = count
     }
 }
 
 class Vector2D{
-    constructor(x, y){
-        this.x = x || 0
-        this.y = y || 0
+    constructor(x=0, y=0){
+        this.x = x
+        this.y = y
+        this.is
+    }
+
+    is(position){
+        return position.x == this.x && position.y == this.y
     }
 }
