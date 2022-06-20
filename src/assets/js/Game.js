@@ -153,7 +153,7 @@ export default class Game{
 
     getFieldIndex = function(position, height){
         let h = height || this.terrain.dimension.height
-        let field = 0
+        let field = 0 
         field += position.x
         field += h*position.y
 
@@ -166,8 +166,8 @@ export default class Game{
         let x = this.player.position.x
         let y = this.player.position.y
 
-        let playerField = this.getFieldIndex(new Vector2D(x, y))
-        
+        let playerField = this.getFieldIndex(this.player.position)
+
         if(this.player.currentFieldIndex != playerField){
             this.playField[this.player.currentFieldIndex].classList.remove("player");
             this.playField[playerField].classList.add("player")
@@ -179,6 +179,7 @@ export default class Game{
 
     }
 
+<<<<<<< HEAD
     updateField() {
         console.table(this.corns)
         this.corns.forEach((element, index) => {
@@ -195,11 +196,19 @@ export default class Game{
     collectCorn = function (position) {
         this.corns.forEach((element, index) => {
             if(element.position.is(position) && element.count > 0){
+=======
+    collectCorn = function (position) {
+        console.log("körner: ", this.corns.length, position)
+        console.log(this.corns)
+        this.corns.forEach(element => {
+            if(element.position = position && element.count > 0){
+>>>>>>> 4f409dd5b8752f78cffc6cb6997615b6e4426ab4
                 this.player.corn++
                 element.count --;
                 if(element.count == 0){
                     let field = this.getFieldIndex(element.position)
-                    console.log(field)
+                    if(field == NaN)
+                        return -1
                     this.playField[field].classList.remove("corn")
                     this.corns.splice(index, 1)
                 }
