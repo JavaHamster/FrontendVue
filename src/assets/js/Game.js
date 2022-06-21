@@ -1,6 +1,5 @@
 /*eslint-disable */
 
-
 export default class Game{
     renderDelay = 500
     corns = []
@@ -23,6 +22,7 @@ export default class Game{
         this.moveForward = this.moveForward.bind(this)
         
         this.updateField
+        this.getCornFromPos
         console.log("Direction : " + this.getPlayerDirection())
     }
 
@@ -63,15 +63,20 @@ export default class Game{
                     color = "player"
                 } else if(playGround_arr[i][j] == '*'){
                     color = "corn"
-                    let corn = new Vector2D(i,j)
-                    this.corns.push(new Corn(corn, 1))
-                    currentRow[j].innerText = 1;
+                    let cornPos = new Vector2D(i,j)
+                    let corn = new Corn(cornPos, 2)
+                    this.corns.push(corn)
+                    currentRow[j].innerText = corn.count;
                 }
                 currentRow[j].classList = "play-field " + color
                    
             }
 
         }
+        this.corns.push(new Corn(new Vector2D(1, 1), 2))
+        let corn = this.playField[this.getFieldIndex(new Vector2D(1, 1))]
+        corn.classList.add("corn")
+        corn.innerText = this.corns[this.corns.length-1].count
     }
 
     createPlayGround() {
@@ -100,7 +105,8 @@ export default class Game{
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"}
+        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
+        // response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
         let steps = this.getSteps(response)
         console.log(Object.values(response))
 
@@ -179,9 +185,19 @@ export default class Game{
 
     }
 
-<<<<<<< HEAD
+    cleanupField(){
+        this.playField.forEach(element => {
+            let classlist = element.classList
+            if(!classlist.contains("player") && element.hasAttribute("direction")){
+                element.removeAttribute("direction")
+            }
+            if(!classlist.contains("player") && !classlist.contains("corn") && !classlist.contains("wall")){
+                element.innerText = ""
+            }
+        })
+    }
+
     updateField() {
-        console.table(this.corns)
         this.corns.forEach((element, index) => {
             if(element.count == 0){
                 this.playField[this.getFieldIndex(element.position)].classList.remove("corn")
@@ -196,13 +212,6 @@ export default class Game{
     collectCorn = function (position) {
         this.corns.forEach((element, index) => {
             if(element.position.is(position) && element.count > 0){
-=======
-    collectCorn = function (position) {
-        console.log("körner: ", this.corns.length, position)
-        console.log(this.corns)
-        this.corns.forEach(element => {
-            if(element.position = position && element.count > 0){
->>>>>>> 4f409dd5b8752f78cffc6cb6997615b6e4426ab4
                 this.player.corn++
                 element.count --;
                 if(element.count == 0){
@@ -215,21 +224,46 @@ export default class Game{
             }
         })
     }
+    
     storeCorn(position) {
-        console.warn(this.corns)
-        let cornField = this.getFieldIndex(position)
-        let corn = this.corns.find(e => e.position == position)
-        console.error(typeof corn )
-                       
-        if(corn != NaN || corn != null || typeof corn === 'undefined'){
-            this.playField[cornField].innerText = corn.count
-            alert("kdlajf")
+        if(this.player.corn <= 0){
+            alert("No corn in inventory")
             return;
         }
 
-        // this.corns.push(new Corn(position))
-        // this.playField[cornField].classList.add("corn")
-        // this.playField[cornField].innerText = "1"
+        alert(position.getPosString())
+
+        let cornField = this.getFieldIndex(position)
+        let corn = this.getCornFromPos(position)
+        if(typeof corn !== 'undefined' && corn != null && corn != -1){
+            let temp = this.playField[cornField].innerText
+            temp = parseInt(temp) + 1
+            this.playField[cornField].innerText = temp
+            return;
+        }
+
+        this.corns.push(new Corn(position))
+        this.playField[cornField].classList.add("corn")
+        this.playField[cornField].innerText = "1"
+        this.player.corn--
+    }
+
+    getCornFromPos(position){
+        console.log(this.corns)
+        console.warn(position)
+        for(let i = 0; i < this.corns.length; i++)
+            if(this.corns[i].position.is(position))
+                return this.corns[i]
+        
+        return -1
+    }
+
+    printCorns(){
+        console.log(this.corns)
+    }
+
+    printPlayer(){
+        console.log(this.player)
     }
 
 }
@@ -250,5 +284,8 @@ class Vector2D{
 
     is(position){
         return position.x == this.x && position.y == this.y
+    }
+    getPosString(){
+        return `x: ${this.x} | y: ${this.y}`
     }
 }

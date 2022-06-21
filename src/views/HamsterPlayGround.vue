@@ -5,6 +5,8 @@
             <div>
                 <div class="play-ground"></div>
                 <button class="start-btn" @click="start">Start</button>
+                <button @click="print">Print</button>
+                <button @click="cleanField">Cleanup</button>
             </div>
             <code-editor/>
         </div>
@@ -54,6 +56,12 @@ methods : {
         }
             
         this.game.handleResponse(" ")
+    },
+    print(){
+        this.game.printCorns()
+    },
+    cleanField(){
+        this.game.cleanupField()
     }
         
 }
