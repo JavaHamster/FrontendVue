@@ -105,7 +105,7 @@ export default class Game{
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
+        // response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
         // response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
         let steps = this.getSteps(response)
         console.log(Object.values(response))

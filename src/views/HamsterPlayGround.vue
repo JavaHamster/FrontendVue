@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <h1>{{hello}}</h1>
         <div class="flex-container">
             <div>
@@ -16,9 +17,11 @@
 <script>
 import CodeEditor from '../components/RichEditor.vue'
 import Game from '../assets/js/Game.js'
+
 export default {
 components: {
-    CodeEditor
+    CodeEditor,
+    
 },
 props : {
     
@@ -34,7 +37,8 @@ data() {
         },
         playGround : "10\n10\n###   ####\n  >       \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n",
         content: "<h1>Some initial content</h1>",
-        game: "" 
+        game: "",
+        reponse: ""
     }
     }
 },
@@ -55,13 +59,16 @@ methods : {
             return
         }
             
-        this.game.handleResponse(" ")
+        this.game.handleResponse(this.reponse)
     },
     print(){
         this.game.printCorns()
     },
     cleanField(){
         this.game.cleanupField()
+    },
+    setResponse(response){
+        this.response = response
     }
         
 }

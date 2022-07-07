@@ -6,7 +6,8 @@
         <h1>Login</h1>
         <input v-model="username" type="text" placeholder="Username/E-Mail">
         <input v-model="password" type="password" placeholder="Password">
-        <LoginButton :link="this.hostname"></LoginButton>
+        <LoginButton :link="this.hostname + 'login'"></LoginButton>
+        
     </form>
     
   </div>
@@ -35,8 +36,8 @@ export default {
         },
         getData(){
             return {
-                username: this.username,
-                password: this.password
+                username : this.username.trim(),
+                password : this.password.trim()
             }
         },
         showError(message){

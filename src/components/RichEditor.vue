@@ -1,21 +1,29 @@
 <template>
   <div class="wrapper">
       <QuillEditor id="richEditor" theme="snow" toolbar=""/>
-      <button class="send" @click="sendCode()">Submit</button>
+      <RestButton :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/>
   </div>
 </template>
 
 <script>
 import { QuillEditor } from '@vueup/vue-quill'
+import RestButton from './RestButton.vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
 export default {
   components: {
-    QuillEditor
+    QuillEditor ,
+    RestButton
+  },
+  data() {
+    return {
+      data: ""
+    }
   },
   methods: {
-      sendCode() {
+      getCode() {
+        alert("kkdkdkdk")
           const editor = document.querySelector("#richEditor .ql-editor")
           const paragraphs = editor.querySelectorAll("p")
           let toReturn = []
@@ -28,7 +36,12 @@ export default {
               }
           })
 
-          console.log(toReturn.join("\n"))
+          //TODO - add request to send code to '/api/hamster/defaultterrain'
+//           void main(){
+            // 	linksUm();
+            // vor();
+            // }
+          return (toReturn.join("\n"))
       }
   }
 }

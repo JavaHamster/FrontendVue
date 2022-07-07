@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <button @click="clickevent()" class="btn" v-text="name"></button>
+    <button @click="clickevent" class="btn" v-text="name"></button>
     <p>{{ get }}</p>
   </div>
 </template>
@@ -8,13 +8,16 @@
 <script>
 /* eslint-disable */
 import axios from "axios";
+
+const https = require('https');
+
 export default {
   name: "LoginButton",
 
   data() {
     return {
       get: null,
-      user: {
+      tempUser: {
       type: Object,
       default: () => ({
         username: {
@@ -38,27 +41,32 @@ export default {
       type: String,
       default: "",
     },
+    user: {
+      type: Object,
+      default: () => ({
+        username: "",
+        password: ""
+      })
+    }
   },
   methods: {
     // TestURL: https://gorest.co.in/public/v2/users
-    async clickevent() {
-      this.user = await this.$parent.getData()
-      console.table(this.user)
+    async clickevent(event) {
       
-      if(this.user.username.length < 4 || this.user.password.length < 8){
-        this.$parent.showError("Check input")
-        return;
+      if (this.user.username == "" && this.user.password == ""){
+        let user_ = this.$parent.getData()
+        this.user.username = user_.username
+        this.user.password = user_.password
       }
 
-      if(this.user.username != "admin123" || this.user.password != "admin123"){
-        this.$parent.showError("Not allowed")
-      }
-
+      console.log(this.user)
+       
       axios.defaults.withCredentials=true; 
       var data = JSON.stringify({
         username: this.user.username,
         password: this.user.password,
       });
+      console.error(data)
       var config = {
         method: "post",
         url: this.link,
@@ -68,6 +76,7 @@ export default {
           "Accept": "*/*", 
         },
         withCredentials: true, 
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
         data: data,
       };
 
