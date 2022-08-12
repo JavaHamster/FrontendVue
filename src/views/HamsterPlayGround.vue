@@ -48,8 +48,6 @@ beforeMount() {
 mounted() {
     let playGround_HTML = document.querySelector(".play-ground")
     this.game = new Game(this.terrain, playGround_HTML)
-    this.game.createPlayGround()
-    this.game.loadEntities()
     console.info("loaded game object")
 },
 methods : {
@@ -58,8 +56,7 @@ methods : {
             console.error("Game object null!")
             return
         }
-            
-        this.game.handleResponse(this.reponse)
+        this.game.handleResponse()
     },
     print(){
         this.game.printCorns()

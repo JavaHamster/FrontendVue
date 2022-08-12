@@ -1,5 +1,5 @@
 /*eslint-disable */
-
+import CommandCreator from './Command.js'
 export default class Game{
     renderDelay = 500
     corns = []
@@ -11,6 +11,7 @@ export default class Game{
     }
 
     constructor(terrain, playGround, playField, player){
+        this.initiated = false
         this.terrain = terrain
         this.playGround = playGround
         this.playField = playField || playGround.querySelectorAll(".play-field")
@@ -20,10 +21,46 @@ export default class Game{
         this.getSteps = this.getSteps.bind(this)
         this.getPlayerDirection = this.getPlayerDirection.bind(this)
         this.moveForward = this.moveForward.bind(this)
+
+        this.commandCreator = new CommandCreator()
         
         this.updateField
         this.getCornFromPos
         console.log("Direction : " + this.getPlayerDirection())
+        this.init()
+    }
+
+    init() {
+        if(this.initiated)
+            return;
+        this.initCommands()
+        this.createPlayGround()
+        this.loadEntities()
+    }
+
+    //FIXME command Functions not yet working
+    initCommands(){
+        this.commandCreator.createCommand("1", function(game=this){
+            moveForward();
+        }, "Move forward by one field")
+
+        this.commandCreator.createCommand("2", function(){
+            this.player.direction ++
+            this.player.direction = (this.player.direction%4 == 0)? 0 : this.player.direction
+            this.updatePlayer()
+        }, "Player turns left")
+        
+        this.commandCreator.createCommand("3", function(){
+            this.storeCorn(this.player.position)
+        }, "Put down a corn if able")
+
+        this.commandCreator.createCommand("4", function() {
+            this.collectCorn(new Vector2D(this.player.position.x, this.player.position.y)) 
+        }, "Pick up 1 Corn if available")
+
+        this.commandCreator.createCommand("5", function(){
+            console.warn("Action of Command with ID: " + this.id + " is undefined")
+        }, "Unused for now")
     }
 
     getPlayerDirection(){
@@ -102,32 +139,17 @@ export default class Game{
     }
 
     handleResponse (response){
+        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        // response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
         // response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
         let steps = this.getSteps(response)
         console.log(Object.values(response))
 
-        Object.values(response).forEach((element, index) => {
+        Object.values(response).forEach((step, index) => {
             setTimeout(() => {
-                switch(element){
-                    case "1":
-                        this.moveForward()
-                        break;
-                    case "2":
-                        this.player.direction ++
-                        this.player.direction = (this.player.direction%4 == 0)? 0 : this.player.direction
-                        this.updatePlayer()
-                        break;
-                    case "3":
-                        this.storeCorn(this.player.position)
-                        break;
-                    case "4":
-                        this.collectCorn(new Vector2D(this.player.position.x, this.player.position.y))
-                        break;
-                }
+                this.commandCreator.startAction("1")
             }, index * this.renderDelay)
             
         });
