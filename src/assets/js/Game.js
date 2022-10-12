@@ -1,5 +1,5 @@
 /*eslint-disable */
-import CommandCreator from './Command.js'
+import { CommandCreator } from "./Command"
 export default class Game{
     renderDelay = 500
     corns = []
@@ -40,27 +40,32 @@ export default class Game{
 
     //FIXME command Functions not yet working
     initCommands(){
-        this.commandCreator.createCommand("1", function(game=this){
-            moveForward();
-        }, "Move forward by one field")
+        let game_object = Object.create(this)
+
+        this.commandCreator.createCommand("1", function(){
+            this.game.moveForward();
+        }, "Move forward by one field", game_object)
 
         this.commandCreator.createCommand("2", function(){
-            this.player.direction ++
-            this.player.direction = (this.player.direction%4 == 0)? 0 : this.player.direction
-            this.updatePlayer()
-        }, "Player turns left")
+            this.game.player.direction ++
+            this.game.player.direction = (this.game.player.direction%4 == 0)? 0 : this.game.player.direction
+            this.game.updatePlayer()
+        }, "Player turns left", game_object)
         
         this.commandCreator.createCommand("3", function(){
-            this.storeCorn(this.player.position)
-        }, "Put down a corn if able")
+            this.game.storeCorn(this.player.position)
+        }, "Put down a corn if able", game_object)
 
         this.commandCreator.createCommand("4", function() {
-            this.collectCorn(new Vector2D(this.player.position.x, this.player.position.y)) 
-        }, "Pick up 1 Corn if available")
+            this.game.collectCorn(new Vector2D(this.game.player.position.x, this.game.player.position.y)) 
+        }, "Pick up 1 Corn if available", game_object)
 
         this.commandCreator.createCommand("5", function(){
             console.warn("Action of Command with ID: " + this.id + " is undefined")
-        }, "Unused for now")
+        }, "Unused for now", game_object)
+        this.commandCreator.createCommand("working", function(){
+            console.log("Finished!")
+        }, "Success Message")
     }
 
     getPlayerDirection(){
@@ -143,13 +148,12 @@ export default class Game{
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        // response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
+        response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
         let steps = this.getSteps(response)
-        console.log(Object.values(response))
 
         Object.values(response).forEach((step, index) => {
             setTimeout(() => {
-                this.commandCreator.startAction("1")
+                this.commandCreator.startAction(step)
             }, index * this.renderDelay)
             
         });
@@ -311,3 +315,5 @@ class Vector2D{
         return `x: ${this.x} | y: ${this.y}`
     }
 }
+
+

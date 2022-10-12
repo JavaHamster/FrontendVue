@@ -1,14 +1,11 @@
-/*eslint-disable*/
 class Command {
-    action = function() {
-        console.log("hello")
-    }
+    action = function() {}
 
-    constructor (id, action, description){
+    constructor (id, action, description, game){
         this.id = id
         this.action = action
         this.description = description
-
+        this.game = game
     }
 
     setAction(action) {
@@ -26,14 +23,14 @@ class Command {
     }
 }
 
-export default class CommandCreator {
+export class CommandCreator {
 
     constructor(commands=[]){
         this.commands = commands
     }
 
-    createCommand(id, action, description=""){
-        this.commands.push(new Command(id, action, description))
+    createCommand(id, action, description="", game){
+        this.commands.push(new Command(id, action, description, game))
     }
 
     getCommandCount(){
@@ -41,11 +38,11 @@ export default class CommandCreator {
     }
 
     startAction(id){
-        var command = this.commands.filter(com => {
+        let command = this.commands.filter(com => {
             return com.id == id
         })
-        console.log(command, id)
-        command.action()
+        
+        command[0].startAction()
     }
 
 }

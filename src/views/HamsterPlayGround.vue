@@ -48,6 +48,7 @@ beforeMount() {
 mounted() {
     let playGround_HTML = document.querySelector(".play-ground")
     this.game = new Game(this.terrain, playGround_HTML)
+    
     console.info("loaded game object")
 },
 methods : {

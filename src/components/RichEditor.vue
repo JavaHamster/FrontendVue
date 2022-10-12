@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
       <QuillEditor id="richEditor" theme="snow" toolbar=""/>
-      <RestButton :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/>
+      <RestButton @click="saveCode()" :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/>
   </div>
 </template>
 
@@ -23,7 +23,6 @@ export default {
   },
   methods: {
       getCode() {
-        alert("kkdkdkdk")
           const editor = document.querySelector("#richEditor .ql-editor")
           const paragraphs = editor.querySelectorAll("p")
           let toReturn = []
@@ -37,11 +36,14 @@ export default {
           })
 
           //TODO - add request to send code to '/api/hamster/defaultterrain'
-//           void main(){
+            //void main(){
             // 	linksUm();
             // vor();
             // }
           return (toReturn.join("\n"))
+      },
+      saveCode(){
+        this.data = this.getCode()
       }
   }
 }
