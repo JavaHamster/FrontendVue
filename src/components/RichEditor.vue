@@ -1,19 +1,24 @@
 <template>
   <div class="wrapper">
       <QuillEditor id="richEditor" theme="snow" toolbar=""/>
-      <RestButton @click="saveCode()" :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/>
+      <!-- <RestButton @click="saveCode()" :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/> -->
+      <button class="submit_code" @click="submitCode()">Submit</button>
   </div>
 </template>
 
 <script>
+
 import { QuillEditor } from '@vueup/vue-quill'
+//eslint-disable-next-line
 import RestButton from './RestButton.vue'
+import request_ from '@/assets/js/Request.js'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 
 export default {
   components: {
     QuillEditor ,
+    //eslint-disable-next-line
     RestButton
   },
   data() {
@@ -42,8 +47,19 @@ export default {
             // }
           return (toReturn.join("\n"))
       },
-      saveCode(){
+      submitCode(){
         this.data = this.getCode()
+
+        let reqObj = {
+          hamster: {
+            programName: "test",
+            program: this.data
+          }
+        }
+
+        console.log(this.data)
+
+        this.$parent.handleServerResponse(request_(this.hostname + "hamster/defaultTerrain", reqObj))
       }
   }
 }

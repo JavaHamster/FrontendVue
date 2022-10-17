@@ -67,6 +67,14 @@ methods : {
     },
     setResponse(response){
         this.response = response
+    },
+    handleServerResponse(response) {
+        console.error(response)
+        if(response == undefined)
+            return
+        if(response[0] == 12)
+            alert("FUNC")
+        this.game.handleResponse(response)
     }
         
 }
