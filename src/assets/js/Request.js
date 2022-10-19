@@ -2,19 +2,18 @@
 import axios from "axios";
 const https = require("https");
 
-export default function request_(url, data) {
+export default async function request_(url, data, method) {
   if(data == "" || data == undefined)
     return
 
   alert("request");
   axios.defaults.withCredentials = true;
   data = JSON.stringify(data);
+
   console.warn(data)
   
-  let response
-  
   var config = {
-    method: "post",
+    method: method,
     url: url,
     headers: {
       "Content-Type": "apllication/json",
@@ -25,14 +24,8 @@ export default function request_(url, data) {
     data: data,
   };
 
-  axios(config)
-    .then(function (response) {
-      return JSON.stringify(response.data);
-    })
-    .then((json) => {
-      return json
-    })
-    .catch(function (error) {
-      console.log(JSON.stringify(error.data));
-    });
+  let promis = await axios(config)
+  let configPromis = promis.data
+  
+    return configPromis
 }

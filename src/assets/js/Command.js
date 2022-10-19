@@ -41,7 +41,12 @@ export class CommandCreator {
         let command = this.commands.filter(com => {
             return com.id == id
         })
-        
+
+        if(command[0] === undefined){
+            console.error("UNKNOWN COMMAND:", id)
+            return;
+        }
+        console.log(command[0], id)
         command[0].startAction()
     }
 

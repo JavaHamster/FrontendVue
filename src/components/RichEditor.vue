@@ -47,7 +47,7 @@ export default {
             // }
           return (toReturn.join("\n"))
       },
-      submitCode(){
+      async submitCode(){
         this.data = this.getCode()
 
         let reqObj = {
@@ -59,7 +59,7 @@ export default {
 
         console.log(this.data)
 
-        this.$parent.handleServerResponse(request_(this.hostname + "hamster/defaultTerrain", reqObj))
+        this.$parent.handleServerResponse(await request_(this.hostname + "hamster/defaultTerrain", reqObj, "post"))
       }
   }
 }

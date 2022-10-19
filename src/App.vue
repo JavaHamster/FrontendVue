@@ -5,8 +5,30 @@
     <router-link to="/playground">Play Ground</router-link> |
     <router-link to="/login">Login</router-link>
   </nav>
+  <!-- <RestButton :name="'Log Out'" :link="this.hostname + 'user/logout'" :method="get" ></RestButton> -->
+  <button @click="logout()">Log Out</button>
   <router-view/>
 </template>
+
+<script>
+/*eslint-disable */
+import RestButton from "@/components/RestButton.vue"
+export default {
+  components: {
+    RestButton
+  },
+  data(){
+    return {
+
+    }
+  },
+  methods: {
+    async logout(){
+      fetch(this.hostname + "user/logout")
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

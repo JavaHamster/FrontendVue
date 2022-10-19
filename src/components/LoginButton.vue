@@ -66,7 +66,7 @@ export default {
         username: this.user.username,
         password: this.user.password,
       });
-      console.error(data)
+      
       var config = {
         method: "post",
         url: this.link,

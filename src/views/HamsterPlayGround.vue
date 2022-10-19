@@ -35,7 +35,8 @@ data() {
             height: 10,
             size : null
         },
-        playGround : "10\n10\n###   ####\n  >       \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n",
+        // playGround : "10\n10\n###   ####\n  >       \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n",
+        playGround: "10\n10\n##        \n>         \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0",
         content: "<h1>Some initial content</h1>",
         game: "",
         reponse: ""
@@ -53,14 +54,11 @@ mounted() {
 },
 methods : {
     start(){
-        if(this.game == "" || typeof this.game == 'undefined'){
-            console.error("Game object null!")
-            return
-        }
-        this.game.handleResponse()
+        this.game.handleResponse({0: '12', 1: '1', finished: 'working'})
     },
     print(){
         this.game.printCorns()
+        this.game.printPlayer()
     },
     cleanField(){
         this.game.cleanupField()
@@ -69,11 +67,15 @@ methods : {
         this.response = response
     },
     handleServerResponse(response) {
-        console.error(response)
+        //eslint-disable-next-line
+        if(!response.hasOwnProperty("0") && !response[0] == 12){
+            console.error("Wrong Response!")
+            return
+        }
+            
         if(response == undefined)
             return
-        if(response[0] == 12)
-            alert("FUNC")
+        console.log(response)
         this.game.handleResponse(response)
     }
         

@@ -1,13 +1,17 @@
 /*eslint-disable */
+
+// TODO: FIX ROW JUMP
+// TODO: FIX FIRST FIELD JUMP
+
 import { CommandCreator } from "./Command"
 export default class Game{
     renderDelay = 500
     corns = []
     player = {
-        position: new Vector2D(2, 1),
-        direction: 0, //0: up | 3: right | 2: down | 1: left
-        currentFieldIndex: 11,
-        corn: 1
+        position: new Vector2D(0, 0),
+        direction: 3, //0: up | 3: right | 2: down | 1: left
+        currentFieldIndex: 0,
+        corn: 0
     }
 
     constructor(terrain, playGround, playField, player){
@@ -18,7 +22,6 @@ export default class Game{
         // this.player.x = player.x || 0
         // this.player.y = player.y || 0
 
-        this.getSteps = this.getSteps.bind(this)
         this.getPlayerDirection = this.getPlayerDirection.bind(this)
         this.moveForward = this.moveForward.bind(this)
 
@@ -36,14 +39,14 @@ export default class Game{
         this.initCommands()
         this.createPlayGround()
         this.loadEntities()
+        this.player.currentFieldIndex = this.getFieldIndex(this.player.position)
     }
 
-    //FIXME command Functions not yet working
     initCommands(){
         let game_object = Object.create(this)
 
         this.commandCreator.createCommand("1", function(){
-            this.game.moveForward();
+            this.game.moveForward()
         }, "Move forward by one field", game_object)
 
         this.commandCreator.createCommand("2", function(){
@@ -93,7 +96,7 @@ export default class Game{
 
         console.table(playGround_arr)
         let color = "white"
-        for(let i = 0; i < this.terrain.dimension.height; i++){
+        for(let i = 0; i < this.terrain.dimension.height; i++){ //x: j | y: i
             const currentRow = Array.from(this.playField).slice(i*this.terrain.dimension.width, (this.terrain.dimension.width*(i+1)));
             for(let j = 0; j < currentRow.length; j++){
                 if(typeof playGround_arr[i][j] == 'undefined' || playGround_arr[i][j] == ' ')
@@ -103,9 +106,10 @@ export default class Game{
                 else if(playGround_arr[i][j] == '>'){
                     currentRow[j].setAttribute("direction", this.getPlayerDirection())
                     color = "player"
+                    this.player.position = new Vector2D(j, i)
                 } else if(playGround_arr[i][j] == '*'){
                     color = "corn"
-                    let cornPos = new Vector2D(i,j)
+                    let cornPos = new Vector2D(j, i)
                     let corn = new Corn(cornPos, 2)
                     this.corns.push(corn)
                     currentRow[j].innerText = corn.count;
@@ -115,14 +119,13 @@ export default class Game{
             }
 
         }
-        this.corns.push(new Corn(new Vector2D(1, 1), 2))
-        let corn = this.playField[this.getFieldIndex(new Vector2D(1, 1))]
-        corn.classList.add("corn")
-        corn.innerText = this.corns[this.corns.length-1].count
+        // this.corns.push(new Corn(new Vector2D(1, 1), 2))
+        // let corn = this.playField[this.getFieldIndex(new Vector2D(1, 1))]
+        // corn.classList.add("corn")
+        // corn.innerText = this.corns[this.corns.length-1].count
     }
 
     createPlayGround() {
-        console.log(this.player.position)
         for(let i = 0; i < this.terrain.dimension.size; i++){
             let div = document.createElement("div")
             div.classList.add("play-field")
@@ -133,27 +136,23 @@ export default class Game{
             this.playField = this.playGround.querySelectorAll(".play-field")
     }
 
-    getSteps(response){
-        let toReturn = []
-        
-        for(const [key, val] of Object.entries(response)){
-            toReturn.push(val)
-        }
-        
-        return toReturn;
-    }
-
     handleResponse (response){
-        response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down
+        
+        // response = {"0":"2","1":"1","2":"3","3":"1","finished":"working"} //lay down     
         if(response == "" || typeof response == 'undefined')
             return -1
         
-        response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
-        let steps = this.getSteps(response)
+        if(!response.hasOwnProperty("finished")){
+            alert("Response Error")
+            return -1
+        }
+
+        // response = {"0":"2","1":"2","2":"1","3":"4","4":"1","5":"1","finished":"working"} //pick up
 
         Object.values(response).forEach((step, index) => {
             setTimeout(() => {
                 this.commandCreator.startAction(step)
+                // this.cleanupField()
             }, index * this.renderDelay)
             
         });
@@ -161,10 +160,12 @@ export default class Game{
             this.playField[this.player.currentFieldIndex].innerText = this.player.corn
         }, (Object.keys(response).length-1)*this.renderDelay);
         console.log("Direction: " + this.getPlayerDirection())
+        
     }
 
     moveForward(){
         let currentDirection = this.getPlayerDirection()
+
         switch(currentDirection){
             case "up":
                 this.player.position.y--
@@ -194,10 +195,7 @@ export default class Game{
     }
 
     updatePlayer(){
-        let height = this.terrain.dimension.height;
-        let x = this.player.position.x
-        let y = this.player.position.y
-
+        
         let playerField = this.getFieldIndex(this.player.position)
 
         if(this.player.currentFieldIndex != playerField){
@@ -208,9 +206,9 @@ export default class Game{
         }
 
         this.playField[this.player.currentFieldIndex].setAttribute("direction", this.getPlayerDirection())
-
     }
 
+    //Garbage-Cleaner in field
     cleanupField(){
         this.playField.forEach(element => {
             let classlist = element.classList
@@ -223,7 +221,7 @@ export default class Game{
         })
     }
 
-    updateField() {
+    updateField() { //update corn count on field
         this.corns.forEach((element, index) => {
             if(element.count == 0){
                 this.playField[this.getFieldIndex(element.position)].classList.remove("corn")

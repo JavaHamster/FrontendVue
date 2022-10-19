@@ -49,10 +49,6 @@ export default {
   methods: {
     // TestURL: https://gorest.co.in/public/v2/users
     async clickevent() {
-      
-      if(this.type_ == "codeSubmit_"){
-        this.data = this.$parent.getCode()
-      }
 
       axios.defaults.withCredentials = true;
       var config = {
