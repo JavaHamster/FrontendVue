@@ -5,9 +5,10 @@
         <div class="flex-container">
             <div>
                 <div class="play-ground"></div>
-                <button class="start-btn" @click="start">Start</button>
-                <button @click="print">Print</button>
-                <button @click="cleanField">Cleanup</button>
+                <button class="start-btn btn" @click="start">Start</button>
+                <button class="btn" @click="print">Print</button>
+                <button class="btn" @click="cleanField">Cleanup</button>
+                <button class="btn" @click="reset">Reset Field</button>
             </div>
             <code-editor/>
         </div>
@@ -47,8 +48,7 @@ beforeMount() {
     this.terrain.dimension.size = this.terrain.dimension.width * this.terrain.dimension.height
 },
 mounted() {
-    let playGround_HTML = document.querySelector(".play-ground")
-    this.game = new Game(this.terrain, playGround_HTML)
+    this.game = this.newGame()
     
     console.info("loaded game object")
 },
@@ -77,8 +77,15 @@ methods : {
             return
         console.log(response)
         this.game.handleResponse(response)
+    },
+    newGame(){
+        let playGround_HTML = document.querySelector(".play-ground")
+        playGround_HTML.innerHTML = ""
+        return new Game(this.terrain, playGround_HTML)
+    },
+    reset(){
+        this.game = this.newGame()
     }
-        
 }
 }
 </script>
@@ -135,4 +142,9 @@ $player-direction-color: black;
 .start-btn {
     margin-top: 1rem;
 }
+
+.btn {
+    margin-inline: .5rem;
+}
+
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-      <QuillEditor id="richEditor" theme="snow" toolbar=""/>
+      <QuillEditor id="richEditor" theme="snow" toolbar="" spellcheck="false"/>
       <!-- <RestButton @click="saveCode()" :link="this.hostname + 'hamster/defaultTerrain'" :type_="'codeSubmit_'" method="post" :data="this.data"/> -->
       <button class="submit_code" @click="submitCode()">Submit</button>
   </div>
@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
     .wrapper {
         width: 60%;
         height: 100%;
@@ -73,6 +73,27 @@ export default {
     #richEditor {
         max-height: 60vh;
         height: 60vh;
+        border: 2px solid black;
+
+        & > * > p{
+          font-size: 24px;
+          text-decoration: none;
+        }
+    }
+    .ql-toolbar {
+          display: none;
+        }
+    
+    .submit_code {
+      outline: 0;
+      border: 0;
+      background: green;
+      width: 150px;
+      height: 75px;
+      color: white;
+      border-radius: 10px;
+      font-size: 20px;
+      margin-block: 1rem;
     }
 
 </style>

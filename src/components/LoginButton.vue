@@ -1,3 +1,4 @@
+// FIXME: password is not getting renewed
 <template>
   <div class="container">
     <button @click="clickevent" class="btn" v-text="name"></button>
@@ -22,11 +23,9 @@ export default {
       default: () => ({
         username: {
           type: String,
-          default: "admin"
         },
         password: {
           type: String,
-          default: "admin"
         }
       })
       }
@@ -59,7 +58,7 @@ export default {
         this.user.password = user_.password
       }
 
-      console.log(this.user)
+      
        
       axios.defaults.withCredentials=true; 
       var data = JSON.stringify({
@@ -67,6 +66,8 @@ export default {
         password: this.user.password,
       });
       
+      console.log(this.data)
+
       var config = {
         method: "post",
         url: this.link,

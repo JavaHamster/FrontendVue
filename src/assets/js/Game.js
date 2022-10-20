@@ -152,7 +152,6 @@ export default class Game{
         Object.values(response).forEach((step, index) => {
             setTimeout(() => {
                 this.commandCreator.startAction(step)
-                // this.cleanupField()
             }, index * this.renderDelay)
             
         });

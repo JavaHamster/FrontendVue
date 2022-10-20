@@ -3,10 +3,11 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/playground">Play Ground</router-link> |
-    <router-link to="/login">Login</router-link>
+    <router-link to="/login">Login</router-link> | 
+    <router-link to="/gamebuilder">Build Game</router-link> 
   </nav>
   <!-- <RestButton :name="'Log Out'" :link="this.hostname + 'user/logout'" :method="get" ></RestButton> -->
-  <button @click="logout()">Log Out</button>
+  <button @click="logout()" class="btn">Log Out</button>
   <router-view/>
 </template>
 
@@ -55,4 +56,13 @@ nav {
     }
   }
 }
+.btn {
+        width: 100px;
+        height: 35px;
+        background: #ee4266;
+        color: white;
+        border: none;
+        outline: none;
+        border-radius: 8px;
+    }
 </style>

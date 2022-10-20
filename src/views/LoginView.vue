@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     #login-wrapper {
         display: flex;
         justify-content: center;
@@ -80,13 +80,5 @@ export default {
         width: 250px;
         font-size: 16px;
     }
-    .btn {
-        width: 100px;
-        height: 35px;
-        background: #ee4266;
-        color: white;
-        border: none;
-        outline: none;
-        border-radius: 8px;
-    }
+    
 </style>

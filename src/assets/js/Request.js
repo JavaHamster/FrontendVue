@@ -5,8 +5,7 @@ const https = require("https");
 export default async function request_(url, data, method) {
   if(data == "" || data == undefined)
     return
-
-  alert("request");
+  
   axios.defaults.withCredentials = true;
   data = JSON.stringify(data);
 
