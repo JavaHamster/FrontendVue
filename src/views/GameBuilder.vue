@@ -3,15 +3,25 @@
     <div class="inputs">
         <div class="input-wrapper">
             <label for="height" class="height-label">Höhe: </label>
-            <input v-model="size.height" type="number" id="height">
+            <input @change="() => {if(size.height > max_size) size.height = max_size}" v-model="size.height" type="number" id="height">
         </div>
         <div class="input-wrapper">
             <label for="width" class="width-label">Breite: </label>
-            <input v-model="size.width" type="number" id="width">
+            <input @change="() => {if(size.width > max_size) size.width = max_size}" v-model="size.width" type="number" id="width">
         </div>
         <div class="input-wrapper">
             <label for="width" class="width-label">Körner Anzahl: </label>
-            <input v-model="cornAnz" type="number" id="cornAnz">
+            <input @change="checkInput" v-model="cornAnz" type="number" id="cornAnz">
+        </div>
+
+        <div>
+            Blickrichtung: 
+            <select name="" id="" v-model="direction">
+            <option value="3">Rechts</option>
+            <option value="1">Links</option>
+            <option value="0">Oben</option>
+            <option value="2">Unten</option>
+        </select>
         </div>
         <button @click="createPlayground" class="btn" id="applyField">Draw</button>
     </div>
@@ -36,6 +46,7 @@
 
 <script>        
 /* eslint-disable */
+
 export default {
     data() {
         return{
@@ -45,7 +56,16 @@ export default {
             },
             cornAnz: 1,
             clicking: false,
-            mounted: false
+            mounted: false,
+            entity_symbols: Object.freeze({
+                                PLAYER: ">",
+                                WALL: "#",
+                                CORN: "*"
+                            }),
+            max_size: 15,
+            player_count: 0,
+            direction: ""
+            
         }
     },
     mounted () {
@@ -61,6 +81,10 @@ export default {
             })
 
             play_ground.addEventListener("mouseup", () => {
+                this.clicking = false
+            })
+
+            play_ground.addEventListener("mouseleave", () => {
                 this.clicking = false
             })
 
@@ -86,16 +110,29 @@ export default {
             console.log(play_ground)
         },
         changeField(element, override=false){
+            let last_classList = element.classList
+            
             if(!this.clicking && !override)
                 return;
 
-            element.classList = "play-field"
-
             let mode = this.getMode()
+            if(mode == "player" && this.player_count >= 1)
+                return;
+
+            console.log(last_classList)
             if(mode == "remove"){
+                if(last_classList.contains("player")){
+                    this.player_count = 0
+                }
+                element.classList = "play-field"
                 element.innerText = ""
                 return
             }
+
+            element.classList = "play-field"
+
+            if(mode == "player")
+                this.player_count++
             
             element.classList.add(mode)
             element.innerText = ""
@@ -111,7 +148,7 @@ export default {
             return checked.id.split("-")[0]
         },
         submit(){
-            let play_ground = tis$refs.play_ground
+            let play_ground = this.$refs.play_ground
             let player = play_ground.querySelectorAll(".play-field.player")
             
             if(player.length <= 0){
@@ -124,10 +161,42 @@ export default {
             }
 
             let play_field = play_ground.querySelectorAll(".play-field")
-            play_field.forEach((field) => {
-                
+            let play_ground_created = []
+            let field_type = ""
+            let row = []
+            
+            for(let y = 0; y < this.size.height; y++){
+                row = []
+                for(let x = 0; x < this.size.width; x++){
+                    let classlist = play_field[x + this.size.width*y].classList
+
+                    if(classlist.contains("player"))
+                        field_type = this.entity_symbols.PLAYER
+                    else if(classlist.contains("corn"))
+                        field_type = this.entity_symbols.CORN
+                    else if(classlist.contains("wall"))
+                        field_type = this.entity_symbols.WALL
+                    else
+                        field_type = ' '
+                    
+                    row.push(field_type)
+                }
+                play_ground_created.push(row)
+            }
+            console.table(play_ground_created)
+            this.stringifyField(play_ground_created)
+        },
+        stringifyField(field) {
+            let output = ""
+            output += `${this.size.height}\n${this.size.width}\n`
+            field.forEach(field_row => {
+                field_row.forEach(field => {
+                    output += field
+                })
+                output += "\n"
             })
 
+            console.log(output)
         }
     }
 }
@@ -149,11 +218,12 @@ $player-direction-color: black;
     height: 50px;
     box-sizing: border-box;
     color: white;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    user-select: none;
     &.corn{
         background: brown;
     }

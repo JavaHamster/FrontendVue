@@ -12,4 +12,10 @@ rootApp.use(router)
     .mount('#app')
 
 // app.config.globalProperties.hostname = "https://localhost/api/"
-app.config.globalProperties.hostname = "https://10.10.209.120/api/"
+app.config.globalProperties.hostname = "https://10.10.208.71/api/"
+
+app.config.globalProperties.entity_symbols = Object.freeze({
+    PLAYER: ">",
+    WALL: "#",
+    CORN: "*"
+})

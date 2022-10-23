@@ -31,7 +31,7 @@ data() {
     return {
         hello : "Welcome to the Play Ground",
         terrain : {
-        dimension : {
+        dimension : { 
             width: 10,
             height: 10,
             size : null
