@@ -118,6 +118,9 @@ export default {
             let mode = this.getMode()
             if(mode == "player" && this.player_count >= 1)
                 return;
+            
+            if(element.classList.contains("player"))
+                this.player_count--
 
             console.log(last_classList)
             if(mode == "remove"){
