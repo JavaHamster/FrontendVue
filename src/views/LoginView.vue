@@ -9,6 +9,8 @@
         <LoginButton :link="this.hostname + 'login'"></LoginButton>
         
     </form>
+
+    <div class="error-message-container"></div>
     
   </div>
 </template>

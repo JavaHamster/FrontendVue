@@ -1,15 +1,16 @@
 /*eslint-disable */
 
-// TODO: FIX ROW JUMP
+// TODO: FIX ROW JUMP: if player x > ground width player moves into next row
 // TODO: FIX FIRST FIELD JUMP
 
 import { CommandCreator } from "./Command"
+import {getPlayerDirection, PLAYER_DIRECTION} from '@/assets/js/utils.js'
 export default class Game{
     renderDelay = 500
     corns = []
     player = {
         position: new Vector2D(0, 0),
-        direction: 3, //0: up | 3: right | 2: down | 1: left
+        direction: PLAYER_DIRECTION.RIGHT,
         currentFieldIndex: 0,
         corn: 0
     }
@@ -22,14 +23,13 @@ export default class Game{
         // this.player.x = player.x || 0
         // this.player.y = player.y || 0
 
-        this.getPlayerDirection = this.getPlayerDirection.bind(this)
         this.moveForward = this.moveForward.bind(this)
 
         this.commandCreator = new CommandCreator()
         
         this.updateField
         this.getCornFromPos
-        console.log("Direction : " + this.getPlayerDirection())
+        console.log("Direction : " + getPlayerDirection(this.player.direction))
         this.init()
     }
 
@@ -50,8 +50,13 @@ export default class Game{
         }, "Move forward by one field", game_object)
 
         this.commandCreator.createCommand("2", function(){
-            this.game.player.direction ++
-            this.game.player.direction = (this.game.player.direction%4 == 0)? 0 : this.game.player.direction
+            let currentDirection = this.game.player.direction
+            currentDirection--
+
+            if(currentDirection < 0)
+                currentDirection = PLAYER_DIRECTION.LEFT
+
+            this.game.player.direction = currentDirection
             this.game.updatePlayer()
         }, "Player turns left", game_object)
         
@@ -71,18 +76,7 @@ export default class Game{
         }, "Success Message")
     }
 
-    getPlayerDirection(){
-        switch(this.player.direction){
-            case 0: 
-                return "up"
-            case 1: 
-                return "left"
-            case 2:
-                return "down"
-            case 3:
-                return "right"
-        }
-    }
+    
 
     loadEntities() {
         const terLines = this.terrain.playGround.split("\n")
@@ -104,7 +98,7 @@ export default class Game{
                 else if(playGround_arr[i][j] == "#")
                     color = "wall"
                 else if(playGround_arr[i][j] == '>'){
-                    currentRow[j].setAttribute("direction", this.getPlayerDirection())
+                    currentRow[j].setAttribute("direction", getPlayerDirection(this.player.direction))
                     color = "player"
                     this.player.position = new Vector2D(j, i)
                 } else if(playGround_arr[i][j] == '*'){
@@ -158,12 +152,12 @@ export default class Game{
         setTimeout(() => {
             this.playField[this.player.currentFieldIndex].innerText = this.player.corn
         }, (Object.keys(response).length-1)*this.renderDelay);
-        console.log("Direction: " + this.getPlayerDirection())
+        console.log("Direction: " + getPlayerDirection(this.player.direction))
         
     }
 
     moveForward(){
-        let currentDirection = this.getPlayerDirection()
+        let currentDirection = getPlayerDirection(this.player.direction)
 
         switch(currentDirection){
             case "up":
@@ -204,7 +198,7 @@ export default class Game{
             this.player.currentFieldIndex = playerField
         }
 
-        this.playField[this.player.currentFieldIndex].setAttribute("direction", this.getPlayerDirection())
+        this.playField[this.player.currentFieldIndex].setAttribute("direction", getPlayerDirection(this.player.direction))
     }
 
     //Garbage-Cleaner in field

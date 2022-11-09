@@ -1,4 +1,3 @@
-// FIXME: password is not getting renewed
 <template>
   <div class="container">
     <button @click="clickevent" class="btn" v-text="name"></button>

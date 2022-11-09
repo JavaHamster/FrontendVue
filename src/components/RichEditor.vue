@@ -40,11 +40,6 @@ export default {
               }
           })
 
-          //TODO - add request to send code to '/api/hamster/defaultterrain'
-            //void main(){
-            // 	linksUm();
-            // vor();
-            // }
           return (toReturn.join("\n"))
       },
       async submitCode(){

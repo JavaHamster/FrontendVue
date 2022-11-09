@@ -13,16 +13,6 @@
             <label for="width" class="width-label">Körner Anzahl: </label>
             <input @change="checkInput" v-model="cornAnz" type="number" id="cornAnz">
         </div>
-
-        <div>
-            Blickrichtung: 
-            <select name="" id="" v-model="direction">
-            <option value="3">Rechts</option>
-            <option value="1">Links</option>
-            <option value="0">Oben</option>
-            <option value="2">Unten</option>
-        </select>
-        </div>
         <button @click="createPlayground" class="btn" id="applyField">Draw</button>
     </div>
     <div class="mode-container">
@@ -47,6 +37,7 @@
 <script>        
 /* eslint-disable */
 
+import {getPlayerDirection,PLAYER_DIRECTION} from '@/assets/js/utils.js'
 export default {
     data() {
         return{
@@ -64,7 +55,21 @@ export default {
                             }),
             max_size: 15,
             player_count: 0,
-            direction: ""
+            direction: "",
+            player_direction: PLAYER_DIRECTION.RIGHT,
+            hamster: {
+                programName: "test", 
+                program: "void main() {vor();}",
+                terrainName: "testTerrain", 
+                laenge: 0, 
+                breite: 0, 
+                x: 0, 
+                y: 1, 
+                blickrichtung: 1,
+                cornAnzahl: [],
+                corn: [], 
+                wall: []
+            }
             
         }
     },
@@ -116,8 +121,13 @@ export default {
                 return;
 
             let mode = this.getMode()
-            if(mode == "player" && this.player_count >= 1)
+            if(mode == "player" && this.player_count >= 1){
+                if(element.classList.contains("player")){
+                    this.changeDirection()
+                    element.setAttribute("direction", getPlayerDirection(this.player_direction))
+                }
                 return;
+            }
             
             if(element.classList.contains("player"))
                 this.player_count--
@@ -134,9 +144,10 @@ export default {
 
             element.classList = "play-field"
 
-            if(mode == "player")
+            if(mode == "player"){
                 this.player_count++
-            
+                element.setAttribute('direction', getPlayerDirection(this.player_direction))
+            }            
             element.classList.add(mode)
             element.innerText = ""
 
@@ -171,14 +182,21 @@ export default {
             for(let y = 0; y < this.size.height; y++){
                 row = []
                 for(let x = 0; x < this.size.width; x++){
-                    let classlist = play_field[x + this.size.width*y].classList
+                    let field = play_field[x + this.size.width*y]
+                    let classlist = field.classList
 
-                    if(classlist.contains("player"))
+                    if(classlist.contains("player")){
                         field_type = this.entity_symbols.PLAYER
-                    else if(classlist.contains("corn"))
+                        this.hamster.x = x
+                        this.hamster.y = y
+                    }else if(classlist.contains("corn")){
                         field_type = this.entity_symbols.CORN
-                    else if(classlist.contains("wall"))
+                        this.hamster.cornAnzahl.push(field.innerText)
+                        this.hamster.corn.push([x, y])
+                    }else if(classlist.contains("wall")){
                         field_type = this.entity_symbols.WALL
+                        this.hamster.wall.push([x, y])
+                    }
                     else
                         field_type = ' '
                     
@@ -188,6 +206,10 @@ export default {
             }
             console.table(play_ground_created)
             this.stringifyField(play_ground_created)
+            this.hamster.blickrichtung = this.player_direction
+            this.hamster.breite = this.size.width
+            this.hamster.laenge = this.size.height
+            console.log(this.hamster)
         },
         stringifyField(field) {
             let output = ""
@@ -200,7 +222,12 @@ export default {
             })
 
             console.log(output)
-        }
+        },
+        changeDirection(){
+            this.player_direction--
+            if(this.player_direction < 0)
+                this.player_direction = Object.keys(PLAYER_DIRECTION).length-1
+        },
     }
 }
 </script>
