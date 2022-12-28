@@ -48,12 +48,12 @@ export default {
             cornAnz: 1,
             clicking: false,
             mounted: false,
-            entity_symbols: Object.freeze({
-                                PLAYER: ">",
-                                WALL: "#",
-                                CORN: "*"
-                            }),
             max_size: 15,
+            entity_symbols: Object.freeze({
+                PLAYER: ">",
+                WALL: "#",
+                CORN: "*"
+            }),
             player_count: 0,
             direction: "",
             player_direction: PLAYER_DIRECTION.RIGHT,
@@ -191,7 +191,7 @@ export default {
                         this.hamster.y = y
                     }else if(classlist.contains("corn")){
                         field_type = this.entity_symbols.CORN
-                        this.hamster.cornAnzahl.push(field.innerText)
+                        this.hamster.cornAnzahl.push(Number(field.innerText))
                         this.hamster.corn.push([x, y])
                     }else if(classlist.contains("wall")){
                         field_type = this.entity_symbols.WALL
@@ -204,12 +204,9 @@ export default {
                 }
                 play_ground_created.push(row)
             }
-            console.table(play_ground_created)
+
             this.stringifyField(play_ground_created)
-            this.hamster.blickrichtung = this.player_direction
-            this.hamster.breite = this.size.width
-            this.hamster.laenge = this.size.height
-            console.log(this.hamster)
+            this.createTerJson()
         },
         stringifyField(field) {
             let output = ""
@@ -228,6 +225,33 @@ export default {
             if(this.player_direction < 0)
                 this.player_direction = Object.keys(PLAYER_DIRECTION).length-1
         },
+        createTerJson(){
+            let terName = prompt("Enter Name of Territory:")
+            if (terName == "" || terName == undefined  || terName == null ){
+                console.warn("submit cancelled!")
+                return
+            }
+
+            let lhamster = this.hamster
+
+            lhamster.blickrichtung = this.player_direction
+            lhamster.breite = this.size.height
+            lhamster.laenge = this.size.width
+            lhamster.terrainName = terName
+
+            this.hamster = lhamster
+            
+            let currSavedTerrs = localStorage.getItem('territories')
+
+            if (currSavedTerrs == null || currSavedTerrs == undefined)
+                currSavedTerrs = []
+            else
+                currSavedTerrs = JSON.parse(currSavedTerrs)
+            
+            currSavedTerrs.push(this.hamster)
+
+            localStorage.setItem('territories', JSON.stringify(currSavedTerrs))
+        }
     }
 }
 </script>
