@@ -3,11 +3,12 @@
     <div class="inputs">
         <div class="input-wrapper">
             <label for="height" class="height-label">Höhe: </label>
-            <input @change="() => {if(size.height > max_size) size.height = max_size}" v-model="size.height" type="number" id="height">
+            <RangeSliderVue class="slider hight" :min_size="min_size" :max_size="max_size"/>
         </div>
         <div class="input-wrapper">
             <label for="width" class="width-label">Breite: </label>
-            <input @change="() => {if(size.width > max_size) size.width = max_size}" v-model="size.width" type="number" id="width">
+            <RangeSliderVue class="slider width" :min_size="min_size" :max_size="max_size"/>
+
         </div>
         <div class="input-wrapper">
             <label for="width" class="width-label">Körner Anzahl: </label>
@@ -38,7 +39,11 @@
 /* eslint-disable */
 
 import {getPlayerDirection,PLAYER_DIRECTION} from '@/assets/js/utils.js'
+import RangeSliderVue from '@/components/RangeSlider.vue'
 export default {
+    components: {
+        RangeSliderVue
+    },
     data() {
         return{
             size: {
@@ -49,6 +54,7 @@ export default {
             clicking: false,
             mounted: false,
             max_size: 15,
+            min_size: 1,
             entity_symbols: Object.freeze({
                 PLAYER: ">",
                 WALL: "#",
@@ -70,7 +76,6 @@ export default {
                 corn: [], 
                 wall: []
             }
-            
         }
     },
     mounted () {
@@ -78,6 +83,12 @@ export default {
     },
     methods: {
         createPlayground(){
+
+            if (this.size.width == 1 && this.size.height == 1){
+                alert("Dimension of Playground is to small!")
+                return;
+            }
+
             let play_ground = this.$refs.play_ground
             play_ground.innerHTML = ''
 
@@ -164,11 +175,17 @@ export default {
         submit(){
             let play_ground = this.$refs.play_ground
             let player = play_ground.querySelectorAll(".play-field.player")
-            
+
+            if (play_ground.innerHTML == ""){
+                alert("No Playground generated!")
+                return;
+            }    
+
             if(player.length <= 0){
                 alert("Select a player")
                 return;
             }
+
             if(player.length > 1){
                 alert("Only 1 Player allowed")
                 return;
@@ -299,6 +316,11 @@ $player-direction-color: black;
             border-right: $player-direction-border solid $player-direction-color;
         }
     }
+
+}
+
+.slider {
+    transform: scale(.85)
 }
 
 .input-wrapper {

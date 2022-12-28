@@ -41,10 +41,6 @@ export default {
     },
     user: {
       type: Object,
-      default: () => ({
-        username: "",
-        password: ""
-      })
     }
   },
   methods: {
@@ -57,14 +53,12 @@ export default {
         this.user.password = user_.password
       }
 
-      
-       
       axios.defaults.withCredentials=true; 
       var data = JSON.stringify({
         username: this.user.username,
         password: this.user.password,
       });
-      
+       
       console.log(this.data)
 
       var config = {
