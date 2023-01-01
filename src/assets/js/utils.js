@@ -21,3 +21,7 @@ export function getPlayerDirection(direction){
             return "right"
     }
 }
+
+export function checkValue(value){
+    return ["", NaN, undefined].includes(value)
+}

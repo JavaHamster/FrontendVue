@@ -20,7 +20,7 @@ export default {
   },
   data(){
     return {
-
+      gameBuilder_Switches: []
     }
   },
   methods: {
@@ -42,6 +42,8 @@ export default {
 html {
   width: 100vw;
   height: 100vh;
+  font-size: 1rem;
+  overflow-x: hidden;
 }
 
 nav {

@@ -1,46 +1,31 @@
 <template>
-  <div id="login-wrapper" ref="loginWrapper">
-    
-    <form action="">
-        
-        <h1>Login</h1>
-        <input v-model="username" type="text" placeholder="Username/E-Mail">
-        <input v-model="password" type="password" placeholder="Password">
-        <LoginButton :link="this.hostname + 'login'"></LoginButton>
-        
-    </form>
+  <div ref="loginWrapper"> 
 
+    <LoginModule :link="this.hostname + 'login'"/>
     <div class="error-message-container"></div>
     
   </div>
 </template>
  
 <script>
-import LoginButton from "../components/LoginButton.vue"
+import LoginModule from "../components/LoginModule.vue"
 import ErrorMessage from "../components/ErrorMessage.vue"
 import * as Vue from "vue"
 var apps = []
 export default {
     data(){
         return {
-            username: "",
-            password: ""
+            
         }
     },
     components: {
-        LoginButton,
+        LoginModule,
         //eslint-disable-next-line
         ErrorMessage
     },
     methods: {
         login(){  
             alert(this.hostname)
-        },
-        getData(){
-            return {
-                username : this.username.trim(),
-                password : this.password.trim()
-            }
         },
         showError(message){
             //TODO find another way to add Components
@@ -64,23 +49,6 @@ export default {
 </script>
 
 <style scoped>
-    #login-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    input{
-        margin-block: 1rem;
-        height: 40px;
-        width: 250px;
-        font-size: 16px;
-    }
+    
     
 </style>

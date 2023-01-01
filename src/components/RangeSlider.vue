@@ -22,15 +22,22 @@ export default {
     },
     props: {
         max_size: {
-            default: 15
+            required: true
         },
         min_size: {
-            default: 1
+            required: true
+        },
+        target: {
+            required: true
         }
     },
     methods: {
         onInputChange(e){
-            this.$refs.current_value_p.innerText = e.currentTarget.value
+            var value = e.currentTarget.value
+
+            this.$refs.current_value_p.innerText = value
+
+            this.$emit("onValueChange", this.target, value)
         }
     },
     mounted() {
@@ -40,6 +47,9 @@ export default {
 
         this.$refs.current_value_p.innerText = value
         this.$refs.range_input.value = value
+
+        this.$emit("onValueChange", this.target, value)
+
     }
 }
 
@@ -47,7 +57,6 @@ export default {
 
 <style lang="scss" scoped>
     $main-color: #FD8A8A;
-    $current-value-visibility: visible;
 
     .flex-centered {
         display: flex;
@@ -63,11 +72,12 @@ export default {
         background-color: white;
         border-radius: 1.2rem;
 
-        &:hover {
-            $current-value-visibility: hidden;
+        &:hover > .current-value-container {
+            opacity: 100;
         }
+    
     }
-
+    
     .slider {
         position: relative;
         
@@ -106,7 +116,9 @@ export default {
     }
 
     .current-value-container {
-        visibility: $current-value-visibility;
+        opacity: 0;
+        transition: opacity ease-out 250ms;
+
         & .current-value {
             position: absolute;
             width: 40px;
@@ -121,6 +133,8 @@ export default {
             border-top-left-radius: 50%;
             border-bottom-left-radius: 50%;
             border-top-right-radius: 50%;
+
+            user-select: none;
 
             & p {
                 padding: 0;

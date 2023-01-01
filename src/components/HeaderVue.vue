@@ -13,7 +13,7 @@
 
 <script>
 import RestButton from "./RestButton.vue";
-import LoginButton from "./LoginButton.vue"
+import LoginButton from "./LoginModule.vue"
 
 export default {
   name: "HeaderVue",

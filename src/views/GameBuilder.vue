@@ -1,38 +1,33 @@
 //TODO: make diagonal placing
 <template>
-    <div class="inputs">
-        <div class="input-wrapper">
-            <label for="height" class="height-label">Höhe: </label>
-            <RangeSliderVue class="slider hight" :min_size="min_size" :max_size="max_size"/>
-        </div>
-        <div class="input-wrapper">
-            <label for="width" class="width-label">Breite: </label>
-            <RangeSliderVue class="slider width" :min_size="min_size" :max_size="max_size"/>
+    <section class="game-builder">
+        <div class="inputs">
+            <div class="input-wrapper">
+                <label for="height" class="height-label">Höhe: </label>
+                <RangeSliderVue class="slider hight" :min_size="min_size" :max_size="max_size" target="height" @onValueChange="handleRangeChange"/>
+            </div>
+            <div class="input-wrapper">
+                <label for="width" class="width-label">Breite: </label>
+                <RangeSliderVue class="slider width" :min_size="min_size" :max_size="max_size" target="width" @onValueChange="handleRangeChange"/>
 
+            </div>
+            <div class="input-wrapper">
+                <label for="width" class="width-label">Körner Anzahl: </label>
+                <RangeSliderVue class="slider corn_anz" min_size="1" max_size="10" target="corn_anz" @onValueChange="handleRangeChange"/>
+            </div>
+            <button @click="createPlayground" class="btn" id="applyField">Draw</button>
         </div>
-        <div class="input-wrapper">
-            <label for="width" class="width-label">Körner Anzahl: </label>
-            <input @change="checkInput" v-model="cornAnz" type="number" id="cornAnz">
+        <div class="mode-container">
+            <GameBuilderBuildOptionVue :switches="switches"/>
         </div>
-        <button @click="createPlayground" class="btn" id="applyField">Draw</button>
-    </div>
-    <div class="mode-container">
-        <label for="corn-mode">
-            <input type="radio" name="mode" id="corn-mode">
-            Corn</label>
-        <label for="player-mode">
-            <input type="radio" name="mode" id="player-mode">
-            Player</label>
-        <label for="wall-mode">
-            <input type="radio" name="mode" id="wall-mode">
-            Wall</label>
-        <label for="remove-mode">
-            <input type="radio" name="mode" id="remove-mode">
-            Remove</label>
-    </div>
 
-  <div ref="play_ground" class="play-ground" ></div>
-  <button id="submit" @click="submit">Submit</button>
+    <div ref="play_ground" class="play-ground" ></div>
+    <div class="btn-wrapper">
+        <button id="submit" class="btn" @click="submit">Submit</button>
+        
+        <button id="clear-playground" class="btn" @click="resetPlayGround">Clear</button>
+    </div>
+    </section>
 </template>
 
 <script>        
@@ -40,9 +35,40 @@
 
 import {getPlayerDirection,PLAYER_DIRECTION} from '@/assets/js/utils.js'
 import RangeSliderVue from '@/components/RangeSlider.vue'
+import GameBuilderBuildOptionVue from '@/components/GameBuilderBuildOption.vue'
 export default {
     components: {
-        RangeSliderVue
+        RangeSliderVue,
+        GameBuilderBuildOptionVue
+    },
+    created(){
+        
+        var arr = []
+        arr.push({
+            id: "corn-mode",
+            name: "Corn",
+            icon_url: "../assets/svg/corn-hybrid.svg"
+        })
+
+        arr.push({
+            id: "player-mode",
+            name: "Player",
+            icon_url: "../assets/svg/hamster.svg"
+        })
+
+        arr.push({
+            id: "wall-mode",
+            name: "Wall",
+            icon_url: "../assets/svg/wall.svg"
+        })
+
+        arr.push({
+            id: "remove-mode",
+            name: "Remove",
+            icon_url: "../assets/svg/remove.svg"            
+        })
+
+        this.switches = arr
     },
     data() {
         return{
@@ -50,9 +76,9 @@ export default {
                 width: 5,
                 height: 5
             },
+            switches:[],
             cornAnz: 1,
             clicking: false,
-            mounted: false,
             max_size: 15,
             min_size: 1,
             entity_symbols: Object.freeze({
@@ -60,6 +86,7 @@ export default {
                 WALL: "#",
                 CORN: "*"
             }),
+            max_player: 1,
             player_count: 0,
             direction: "",
             player_direction: PLAYER_DIRECTION.RIGHT,
@@ -75,11 +102,9 @@ export default {
                 cornAnzahl: [],
                 corn: [], 
                 wall: []
-            }
+            },
+            changed: false
         }
-    },
-    mounted () {
-        this.mounted = true
     },
     methods: {
         createPlayground(){
@@ -90,7 +115,13 @@ export default {
             }
 
             let play_ground = this.$refs.play_ground
-            play_ground.innerHTML = ''
+            
+            if(this.changed == true){
+                if(this.resetPlayGround() == false)
+                    return;
+            } else{
+                play_ground.innerHTML = ''
+            }
 
             play_ground.addEventListener('mousedown', () => {
                 this.clicking = true
@@ -120,19 +151,26 @@ export default {
 
                 play_ground.appendChild(div)
             }
-
-
-
-            console.log(play_ground)
         },
-        changeField(element, override=false){
+        resetPlayGround(){
+            if(this.checkValue(this.$refs.play_ground.innerHTML) == false){
+                if(confirm("Playground would be reset!") == false)
+                    return false;
+            }
+            
+
+           this.$refs.play_ground.innerHTML = ''
+        },
+        changeField(element, override=false){ //method for changing single playfield. example: empty field to player
             let last_classList = element.classList
             
-            if(!this.clicking && !override)
+            if(!this.clicking && !override) //check if method is getting overriden (for testing) or action handler is fireing
                 return;
 
+            this.changed = true
+
             let mode = this.getMode()
-            if(mode == "player" && this.player_count >= 1){
+            if(mode == "player" && this.player_count >= this.max_player){
                 if(element.classList.contains("player")){
                     this.changeDirection()
                     element.setAttribute("direction", getPlayerDirection(this.player_direction))
@@ -140,10 +178,9 @@ export default {
                 return;
             }
             
-            if(element.classList.contains("player"))
+            if(element.classList.contains("player")) 
                 this.player_count--
 
-            console.log(last_classList)
             if(mode == "remove"){
                 if(last_classList.contains("player")){
                     this.player_count = 0
@@ -166,13 +203,13 @@ export default {
                 element.innerText = this.cornAnz
             }
         },
-        getMode(){
+        getMode(){ //getting the current selected mode
             let checked = document.querySelector("input[type=radio]:checked")
             if(checked == undefined)
                 return
             return checked.id.split("-")[0]
         },
-        submit(){
+        submit(){ //reading html playground and creating stringifiable array
             let play_ground = this.$refs.play_ground
             let player = play_ground.querySelectorAll(".play-field.player")
 
@@ -225,7 +262,7 @@ export default {
             this.stringifyField(play_ground_created)
             this.createTerJson()
         },
-        stringifyField(field) {
+        stringifyField(field) { //creat string from current playground --> string needed for game start 
             let output = ""
             output += `${this.size.height}\n${this.size.width}\n`
             field.forEach(field_row => {
@@ -234,15 +271,13 @@ export default {
                 })
                 output += "\n"
             })
-
-            console.log(output)
         },
-        changeDirection(){
+        changeDirection(){ //Method for changing viewing direction from the hamster
             this.player_direction--
             if(this.player_direction < 0)
                 this.player_direction = Object.keys(PLAYER_DIRECTION).length-1
         },
-        createTerJson(){
+        createTerJson(){ //Method for creating Terrain-Json-Object for Backendserver
             let terName = prompt("Enter Name of Territory:")
             if (terName == "" || terName == undefined  || terName == null ){
                 console.warn("submit cancelled!")
@@ -267,7 +302,19 @@ export default {
             
             currSavedTerrs.push(this.hamster)
 
-            localStorage.setItem('territories', JSON.stringify(currSavedTerrs))
+            localStorage.setItem('territories', JSON.stringify(currSavedTerrs)) //currently getting save locally
+        },
+        handleRangeChange(target, value) { //method for handeling Rangeslider-Child value change
+            switch(target){
+                case "height": //'height' would be the target of the Component
+                    this.size.height = value
+                    break;
+                case "width":
+                    this.size.width = value
+                    break;
+                case "corn_anz":
+                    this.cornAnz = value
+            }
         }
     }
 }
@@ -282,6 +329,8 @@ $player-direction-color: black;
     grid-template-columns: repeat(10, 50px);
     grid-template-rows: repeat(10, 50px);
     gap: 5px;
+    margin: 2em;
+    justify-content: center;
 }
 .play-field {
     border: 1px solid black;
@@ -295,6 +344,7 @@ $player-direction-color: black;
     justify-content: center;
     font-size: 1.5rem;
     user-select: none;
+
     &.corn{
         background: brown;
     }
@@ -333,5 +383,26 @@ input::-webkit-outer-spin-button{
     margin: 0
 }
 
+.inputs {
+    display: grid;
+    place-items: center;
+    
+    & > div{
+        display: grid;
+        align-items: center;
+        grid-template-columns: repeat(2, .75fr);
+        grid-auto-rows: 50px;
+    }
+}
 
+.mode-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+}
+.btn-wrapper {
+    display: flex;
+    gap: 1em;
+    justify-content: center
+}
 </style>
