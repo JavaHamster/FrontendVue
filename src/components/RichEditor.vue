@@ -10,7 +10,7 @@
 
 import { QuillEditor } from '@vueup/vue-quill'
 //eslint-disable-next-line
-import RestButton from './RestButton.vue'
+import RestButton from './UI/RestButton.vue'
 import request_ from '@/assets/js/Request.js'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 

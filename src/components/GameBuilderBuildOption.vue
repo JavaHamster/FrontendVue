@@ -6,7 +6,7 @@
 
 
 <script>
-import ButtonSwitchVue from './ButtonSwitch.vue';
+import ButtonSwitchVue from './UI/ButtonSwitch.vue';
 export default {
     components: {
         ButtonSwitchVue

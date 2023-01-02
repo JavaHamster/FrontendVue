@@ -13,7 +13,7 @@
 
 <script>
 /*eslint-disable */
-import RestButton from "@/components/RestButton.vue"
+import RestButton from "@/components/UI/RestButton.vue"
 export default {
   components: {
     RestButton
@@ -25,7 +25,11 @@ export default {
   },
   methods: {
     async logout(){
-      fetch(this.hostname + "user/logout")
+      try {
+        fetch(this.hostname + "user/logout")
+      } catch (error) {
+        alert("ERROR")
+      }
     }
   }
 }

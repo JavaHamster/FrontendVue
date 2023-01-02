@@ -10,19 +10,20 @@
                 <button class="btn" @click="cleanField">Cleanup</button>
                 <button class="btn" @click="reset">Reset Field</button>
             </div>
-            <code-editor/>
+            <GroundEditorVue/>
         </div>
     </div>
 </template>
 
 <script>
-import CodeEditor from '../components/RichEditor.vue'
+// import CodeEditor from '../components/RichEditor.vue'
+// import CodeEditor from '../components/Editor/MonacoEditor.vue'
+import GroundEditorVue from '@/components/Editor/GroundEditor.vue'
 import Game from '../assets/js/Game.js'
 
 export default {
 components: {
-    CodeEditor,
-    
+    GroundEditorVue
 },
 props : {
     
@@ -133,6 +134,7 @@ $player-direction-color: black;
     }
 }
 .flex-container {
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -145,6 +147,11 @@ $player-direction-color: black;
 
 .btn {
     margin-inline: .5rem;
+}
+
+.editor {
+    width: 600px;
+    height: 800px;
 }
 
 </style>

@@ -5,14 +5,14 @@
      but you dont have to change smth in nginx - is tested! -->
     <RestButton name="Get All users" :link="this.hostname + 'user/getAllUsers'" method="get"/>
     <RestButton name="Create new user" :link="this.hostname + 'user/createUser'" method="post" :data="sendData" />
-  <LoginButton :link="this.hostname + 'login'" :user="sendLogin" />
+    <LoginButton :link="this.hostname + 'login'" :user="sendLogin" />
     <RestButton name="Run Default Hamster" :link="this.hostname + 'hamster/defaultTerrain'" method="post" :data="sendDefaultHamster" />
     <RestButton name="Logout" :link="this.hostname + 'user/logout'" method="get"/>
   </div>
 </template>
 
 <script>
-import RestButton from "./RestButton.vue";
+import RestButton from "./UI/RestButton.vue";
 import LoginButton from "./LoginModule.vue"
 
 export default {

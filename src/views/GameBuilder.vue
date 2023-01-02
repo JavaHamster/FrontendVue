@@ -34,7 +34,7 @@
 /* eslint-disable */
 
 import {getPlayerDirection,PLAYER_DIRECTION} from '@/assets/js/utils.js'
-import RangeSliderVue from '@/components/RangeSlider.vue'
+import RangeSliderVue from '@/components/UI/RangeSlider.vue'
 import GameBuilderBuildOptionVue from '@/components/GameBuilderBuildOption.vue'
 export default {
     components: {

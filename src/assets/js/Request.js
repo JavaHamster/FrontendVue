@@ -15,7 +15,7 @@ export default async function request_(url, data, method) {
     method: method,
     url: url,
     headers: {
-      "Content-Type": "apllication/json",
+      "Content-Type": "application/json",
       "Access-Control-Allow-Credentials": true,
     },
     withCredentials: true,

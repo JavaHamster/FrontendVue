@@ -1,6 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-const path = require('path')
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -16,11 +15,6 @@ module.exports = defineConfig({
     plugins: [
       new NodePolyfillPlugin()
     ],
-    resolve: {
-      alias: {
-        '@assets': path.resolve(__dirname, '.public/assets')
-      }
-    }
   },
   runtimeCompiler: true,
 })
