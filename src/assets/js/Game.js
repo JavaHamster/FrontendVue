@@ -34,12 +34,13 @@ export default class Game{
     }
 
     init() {
-        if(this.initiated)
+        if(this.initiated == true)
             return;
         this.initCommands()
         this.createPlayGround()
         this.loadEntities()
         this.player.currentFieldIndex = this.getFieldIndex(this.player.position)
+        this.initiated = true
     }
 
     initCommands(){

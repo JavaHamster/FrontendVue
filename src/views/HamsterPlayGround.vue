@@ -1,10 +1,11 @@
 <template>
-    <div>
+    <div class="playground-wrapper">
         
         <h1>{{hello}}</h1>
         <div class="flex-container">
             <div>
-                <div class="play-ground"></div>
+                <PlaygroundTerritorySelectorVue @loadTer="loadTer($event)"/>
+                <div class="playground" data-playground-></div>
                 <button class="start-btn btn" @click="start">Start</button>
                 <button class="btn" @click="print">Print</button>
                 <button class="btn" @click="cleanField">Cleanup</button>
@@ -19,30 +20,32 @@
 // import CodeEditor from '../components/RichEditor.vue'
 // import CodeEditor from '../components/Editor/MonacoEditor.vue'
 import GroundEditorVue from '@/components/Editor/GroundEditor.vue'
+import PlaygroundTerritorySelectorVue from '@/components/UI/PlaygroundTerritorySelector.vue'
 import Game from '../assets/js/Game.js'
 
 export default {
 components: {
-    GroundEditorVue
+    GroundEditorVue,
+    PlaygroundTerritorySelectorVue
 },
 props : {
     
 },
 data() {
     return {
-        hello : "Welcome to the Play Ground",
+        hello : "Welcome to the Playground",
         terrain : {
-        dimension : { 
-            width: 10,
-            height: 10,
-            size : null
-        },
-        // playGround : "10\n10\n###   ####\n  >       \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n",
-        playGround: "10\n10\n##        \n>         \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0",
-        content: "<h1>Some initial content</h1>",
-        game: "",
-        reponse: ""
-    }
+            dimension : { 
+                width: 10,
+                height: 10,
+                size : null
+            },
+            // playGround : "10\n10\n###   ####\n  >       \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0\n",
+            playGround: "10\n10\n##        \n>         \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0",
+            content: "<h1>Some initial content</h1>",
+            game: "",
+            reponse: ""
+        }
     }
 },
 beforeMount() {
@@ -80,13 +83,28 @@ methods : {
         this.game.handleResponse(response)
     },
     newGame(){
-        let playGround_HTML = document.querySelector(".play-ground")
+        let playGround_HTML = document.querySelector(".playground[data-playground-]")
         playGround_HTML.innerHTML = ""
-        return new Game(this.terrain, playGround_HTML)
+        return new Game({
+            terrain: this.terrain,
+            playGroundContainer: playGround_HTML,
+            stringLoad: true
+        })
     },
     reset(){
         this.game = this.newGame()
-    }
+    },
+    loadTer(e){
+        let playGround_HTML = document.querySelector(".playground[data-playground-]")
+        playGround_HTML.innerHTML = ""
+        let obj = {
+            playGroundContainer: playGround_HTML,
+            stringLoad: false,
+            playGroundObj: e
+        }
+        console.log(obj)
+        this.game = new Game(obj)
+    },
 }
 }
 </script>
@@ -94,23 +112,35 @@ methods : {
 <style lang="scss">
 $player-direction-border: 6px;
 $player-direction-color: black;
-.play-ground {
+
+.playground-wrapper {
+    position: relative;
+    height: 100%;
+
+}
+
+.playground[data-playground-] {
     display: grid;
-    grid-template-columns: repeat(10, 50px);
-    grid-template-rows: repeat(10, 50px);
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
     gap: 5px;
+    aspect-ratio: 1/1;
+    user-select: none;
+    height: 100%;
 }
 .play-field {
+    position: relative;
     border: 1px solid black;
-    width: 50px;
-    height: 50px;
+    min-width: 25px;
+    // width: 50px;
+    aspect-ratio: 1/1;
     box-sizing: border-box;
     color: white;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 1.25vw, 2rem);
     &.corn{
         background: brown;
     }
@@ -136,6 +166,7 @@ $player-direction-color: black;
 .flex-container {
     position: relative;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: flex-start;

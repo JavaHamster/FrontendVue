@@ -21,7 +21,7 @@
             <GameBuilderBuildOptionVue :switches="switches"/>
         </div>
 
-    <div ref="play_ground" class="play-ground" ></div>
+    <div ref="playground" class="playground" ></div>
     <div class="btn-wrapper">
         <button id="submit" class="btn" @click="submit">Submit</button>
         
@@ -114,29 +114,29 @@ export default {
                 return;
             }
 
-            let play_ground = this.$refs.play_ground
+            let playground = this.$refs.playground
             
             if(this.changed == true){
                 if(this.resetPlayGround() == false)
                     return;
             } else{
-                play_ground.innerHTML = ''
+                playground.innerHTML = ''
             }
 
-            play_ground.addEventListener('mousedown', () => {
+            playground.addEventListener('mousedown', () => {
                 this.clicking = true
             })
 
-            play_ground.addEventListener("mouseup", () => {
+            playground.addEventListener("mouseup", () => {
                 this.clicking = false
             })
 
-            play_ground.addEventListener("mouseleave", () => {
+            playground.addEventListener("mouseleave", () => {
                 this.clicking = false
             })
 
-            play_ground.style.gridTemplateColumns = `repeat(${this.size.width}, 50px)`
-            play_ground.style.gridTemplateRow = `repeat(${this.size.height}, 50px)`
+            playground.style.gridTemplateColumns = `repeat(${this.size.width}, 1fr)`
+            playground.style.gridTemplateRow = `repeat(${this.size.height}, 1fr)`
 
             for(let i = 0; i < this.size.width*this.size.height; i++){
                 let div = document.createElement("div")
@@ -149,17 +149,17 @@ export default {
                     this.changeField(event.currentTarget)
                 })
 
-                play_ground.appendChild(div)
+                playground.appendChild(div)
             }
         },
         resetPlayGround(){
-            if(this.checkValue(this.$refs.play_ground.innerHTML) == false){
+            if(this.checkValue(this.$refs.playground.innerHTML) == false){
                 if(confirm("Playground would be reset!") == false)
                     return false;
             }
             
 
-           this.$refs.play_ground.innerHTML = ''
+           this.$refs.playground.innerHTML = ''
         },
         changeField(element, override=false){ //method for changing single playfield. example: empty field to player
             let last_classList = element.classList
@@ -210,10 +210,10 @@ export default {
             return checked.id.split("-")[0]
         },
         submit(){ //reading html playground and creating stringifiable array
-            let play_ground = this.$refs.play_ground
-            let player = play_ground.querySelectorAll(".play-field.player")
+            let playground = this.$refs.playground
+            let player = playground.querySelectorAll(".play-field.player")
 
-            if (play_ground.innerHTML == ""){
+            if (playground.innerHTML == ""){
                 alert("No Playground generated!")
                 return;
             }    
@@ -228,8 +228,8 @@ export default {
                 return;
             }
 
-            let play_field = play_ground.querySelectorAll(".play-field")
-            let play_ground_created = []
+            let play_field = playground.querySelectorAll(".play-field")
+            let playground_created = []
             let field_type = ""
             let row = []
             
@@ -256,10 +256,10 @@ export default {
                     
                     row.push(field_type)
                 }
-                play_ground_created.push(row)
+                playground_created.push(row)
             }
 
-            this.stringifyField(play_ground_created)
+            this.stringifyField(playground_created)
             this.createTerJson()
         },
         stringifyField(field) { //creat string from current playground --> string needed for game start 
@@ -324,13 +324,13 @@ export default {
 $player-direction-border: 6px;
 $player-direction-color: black;
 
-.play-ground {
+.game-builder .playground {
     display: grid;
-    grid-template-columns: repeat(10, 50px);
-    grid-template-rows: repeat(10, 50px);
     gap: 5px;
     margin: 2em;
-    justify-content: center;
+    
+    margin-inline: auto;
+    width: min-content;
 }
 .play-field {
     border: 1px solid black;

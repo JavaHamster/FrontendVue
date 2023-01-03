@@ -7,7 +7,9 @@
             :tab-size="2"
             :extensions="extensions"
             @change="updateValue($event)"
+            style="height:100%"
         />
+        <br>
         <button class="btn" @click="submitCode">Submit</button>
     </section>
 </template>
@@ -17,8 +19,9 @@
   import { java } from '@codemirror/lang-java'
   import { oneDark } from '@codemirror/theme-one-dark'
 
-    import request_ from '@/assets/js/Request.js'
+  import request_ from '@/assets/js/Request.js'
 
+  // Codemirror.
 
   export default {
     components: {
@@ -62,10 +65,10 @@
 
 <style>
     
-    .ͼ15 {
-        height: 500px; 
-        width: 750px;
+    .ͼ15, .cm-editor {
+        height: clamp(250px, 35vh, 500px);
+        width: clamp(450px, 45vw, 750px);
         text-align: left;
     } 
-    
+
 </style>

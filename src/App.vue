@@ -37,17 +37,26 @@ export default {
 
 <style lang="scss">
 #app {
+  position: relative;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 html {
   width: 100vw;
   height: 100vh;
   font-size: 1rem;
   overflow-x: hidden;
+}
+
+body {
+  height: 100%;
+  margin: 0;
 }
 
 nav {
