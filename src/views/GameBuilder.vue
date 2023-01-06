@@ -325,49 +325,17 @@ $player-direction-border: 6px;
 $player-direction-color: black;
 
 .game-builder .playground {
-    display: grid;
-    gap: 5px;
-    margin: 2em;
-    
-    margin-inline: auto;
     width: min-content;
-}
-.play-field {
-    border: 1px solid black;
-    width: 50px;
-    height: 50px;
-    box-sizing: border-box;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    user-select: none;
+    margin: 2em;
+    margin-inline: auto;
+    height: min-content;
+    aspect-ratio: 1/1;
 
-    &.corn{
-        background: brown;
+    & .play-field {
+        width: 50px;
     }
-    &.wall {
-        background: black;
-    }
-    &.player {
-        background: blue;
-        &[direction="up"]{
-            border-top: $player-direction-border solid $player-direction-color
-        }
-        &[direction="down"]{
-            border-bottom: $player-direction-border solid $player-direction-color
-        }
-        &[direction="left"]{
-            border-left: $player-direction-border solid $player-direction-color
-        }
-        &[direction="right"]{
-            border-right: $player-direction-border solid $player-direction-color;
-        }
-    }
-
 }
+
 
 .slider {
     transform: scale(.85)

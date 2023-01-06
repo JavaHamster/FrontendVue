@@ -16,10 +16,9 @@
 
 <script>
   import { Codemirror } from 'vue-codemirror'
-  import { java } from '@codemirror/lang-java'
+  // import { java } from '@codemirror/lang-java'
+  import {javascript} from '@codemirror/lang-javascript'
   import { oneDark } from '@codemirror/theme-one-dark'
-
-  import request_ from '@/assets/js/Request.js'
 
   // Codemirror.
 
@@ -34,7 +33,7 @@
             void main(){\n\t\n}
             
             `.trim(),
-            extensions: [java(), oneDark],
+            extensions: [javascript(), oneDark],
             value: ""
         }
     },
@@ -55,9 +54,8 @@
           }
         }
 
-        console.log(this.value)
-
-        this.$parent.handleServerResponse(await request_(this.hostname + "hamster/defaultTerrain", reqObj, "post"))
+        // this.$parent.handleServerResponse(await request_(this.hostname + "hamster/defaultTerrain", reqObj, "post"))
+        this.$emit('submitted', reqObj)
       }
     }
   }

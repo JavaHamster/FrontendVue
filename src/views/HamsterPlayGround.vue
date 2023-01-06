@@ -11,7 +11,7 @@
                 <button class="btn" @click="cleanField">Cleanup</button>
                 <button class="btn" @click="reset">Reset Field</button>
             </div>
-            <GroundEditorVue/>
+            <GroundEditorVue @submitted="submitCode($event)"/>
         </div>
     </div>
 </template>
@@ -21,8 +21,8 @@
 // import CodeEditor from '../components/Editor/MonacoEditor.vue'
 import GroundEditorVue from '@/components/Editor/GroundEditor.vue'
 import PlaygroundTerritorySelectorVue from '@/components/UI/PlaygroundTerritorySelector.vue'
-import Game from '../assets/js/Game.js'
-
+import Game from '../assets/js/Game.js' 
+import {request_} from '../assets/js/Request.js'
 export default {
 components: {
     GroundEditorVue,
@@ -44,7 +44,12 @@ data() {
             playGround: "10\n10\n##        \n>         \n  *       \n  *       \n          \n          \n          \n          \n          \n          \n0\n1\n1\n0",
             content: "<h1>Some initial content</h1>",
             game: "",
-            reponse: ""
+            reponse: "",
+            direction: 1
+        },
+        field_attribute: 'data-playground-field-',
+        loaded_terrain_obj: {
+            type: Object
         }
     }
 },
@@ -84,34 +89,53 @@ methods : {
     },
     newGame(){
         let playGround_HTML = document.querySelector(".playground[data-playground-]")
-        playGround_HTML.innerHTML = ""
-        return new Game({
-            terrain: this.terrain,
-            playGroundContainer: playGround_HTML,
-            stringLoad: true
-        })
+        // playGround_HTML.innerHTML = ""
+        // return new Game(this.terrain, playGround_HTML)
+
+        let game = new Game(playGround_HTML, this.field_attribute)
+        this.loaded_terrain_obj = game.createEntityString(this.terrain)
+        return game
     },
     reset(){
         this.game = this.newGame()
     },
     loadTer(e){
-        let playGround_HTML = document.querySelector(".playground[data-playground-]")
-        playGround_HTML.innerHTML = ""
-        let obj = {
-            playGroundContainer: playGround_HTML,
-            stringLoad: false,
-            playGroundObj: e
-        }
-        console.log(obj)
-        this.game = new Game(obj)
+        this.game.createEntityObj(e)
+        this.loaded_terrain_obj = e
     },
+    async submitCode(e){        
+        for(let prop in this.loaded_terrain_obj){
+            e.hamster[prop] = this.loaded_terrain_obj[prop]
+        }
+        let result = await request_(this.hostname + "/hamster/newTerrain", e, 'POST')
+        
+        this.game.handleResponse(result)
+    }
+    // terObjToString(obj){
+    //     // let output = `${obj.laenge}\n${obj.breite}\n`
+    //     // let field = ""
+    //     // for(let y = 0; y < obj.laenge; y++){
+    //     //     for(let x = 0; x < obj.breite; x++){
+    //     //         field += " "
+    //     //     }
+    //     //     field += "\n"
+    //     // }
+        
+    //     // let lines = field.split("\n")
+        
+    //     // for(let iWall = 0; iWall < obj.wall.length; iWall++){
+    //     //     lines[obj.wall[iWall][1]][obj.wall[iWall][0]] = "#"
+    //     // }
+
+    //     // // for(let iCorn = 0; iCorn < obj.corn.length; iCorn++){
+
+    //     // // }
+    // }
 }
 }
 </script>
 
 <style lang="scss">
-$player-direction-border: 6px;
-$player-direction-color: black;
 
 .playground-wrapper {
     position: relative;
@@ -119,50 +143,7 @@ $player-direction-color: black;
 
 }
 
-.playground[data-playground-] {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-    gap: 5px;
-    aspect-ratio: 1/1;
-    user-select: none;
-    height: 100%;
-}
-.play-field {
-    position: relative;
-    border: 1px solid black;
-    min-width: 25px;
-    // width: 50px;
-    aspect-ratio: 1/1;
-    box-sizing: border-box;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1rem, 1.25vw, 2rem);
-    &.corn{
-        background: brown;
-    }
-    &.wall {
-        background: black;
-    }
-    &.player {
-        background: blue;
-        &[direction="up"]{
-            border-top: $player-direction-border solid $player-direction-color
-        }
-        &[direction="down"]{
-            border-bottom: $player-direction-border solid $player-direction-color
-        }
-        &[direction="left"]{
-            border-left: $player-direction-border solid $player-direction-color
-        }
-        &[direction="right"]{
-            border-right: $player-direction-border solid $player-direction-color;
-        }
-    }
-}
+
 .flex-container {
     position: relative;
     width: 100%;
