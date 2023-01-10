@@ -1,8 +1,9 @@
 /*eslint-disable */
 import { CommandCreator } from "./Command"
 import {getPlayerDirection, PLAYER_DIRECTION} from '@/assets/js/utils.js'
+const EventEmitter = require('events')
 
-export default class Game{
+export default class Game extends EventEmitter{
     
     renderDelay = 500
     corns = []
@@ -23,6 +24,7 @@ export default class Game{
 
 
     constructor(container, field_attribute){
+        super()
         this.container = container
         this.field_attribute = field_attribute
         
@@ -144,6 +146,9 @@ export default class Game{
 
         this.player.direction = terrainObj.blickrichtung
 
+        this.player.position.x = terrainObj.x
+        this.player.position.y = terrainObj.y
+
         this.terrain.dimension.width = terrainObj.laenge
         this.terrain.dimension.height = terrainObj.breite
 
@@ -152,9 +157,11 @@ export default class Game{
         }
 
         for(let iCorn = 0; iCorn < terrainObj.corn.length; iCorn++){
-            let corn = fields[this.getFieldIndex(new Vector2D(terrainObj.corn[iCorn][0], terrainObj.corn[iCorn][1]), terrainObj.laenge)]
+            let position = new Vector2D(terrainObj.corn[iCorn][0], terrainObj.corn[iCorn][1])
+            let corn = fields[this.getFieldIndex(position, terrainObj.laenge)]
             corn.classList = 'play-field corn'
             corn.innerText = terrainObj.cornAnzahl[iCorn]
+            this.corns.push(new Corn(position, terrainObj.cornAnzahl[iCorn]))
         }
 
         let player = fields[this.getFieldIndex(new Vector2D(terrainObj.x, terrainObj.y), terrainObj.laenge)]
@@ -170,19 +177,18 @@ export default class Game{
         field += position.x
         field += h*position.y
 
-        console.log("FIELD: ", h, field, position.x, position.y)
         return field
     }
 
     resetPlayground(width, height){
         this.container.innerHTML = ''
         this.createPlayground(width, height)
+        this.corns = []
     }
 
     updatePlayer(){
         
         let playerField = this.getFieldIndex(this.player.position)
-        console.log(this.fields)
         if(this.player.currentFieldIndex != playerField){
             this.fields[this.player.currentFieldIndex].classList.remove("player");
             this.fields[playerField].classList.add("player")
@@ -191,17 +197,21 @@ export default class Game{
         }
 
         this.fields[this.player.currentFieldIndex].setAttribute("direction", getPlayerDirection(this.player.direction))
+        this.cleanupField()
     }
 
     //Garbage-Cleaner in field
     cleanupField(){
-        this.fields.forEach(element => {
+        this.fields.forEach((element, index) => {
             let classlist = element.classList
             if(!classlist.contains("player") && element.hasAttribute("direction")){
                 element.removeAttribute("direction")
             }
             if(!classlist.contains("player") && !classlist.contains("corn") && !classlist.contains("wall")){
                 element.innerText = ""
+            }
+            if(classlist.contains('player') && index != this.player.currentFieldIndex){
+                element.classList.remove('player')
             }
         })
     }
@@ -213,14 +223,18 @@ export default class Game{
                 this.corns.splice(index, 1)
             }
         })
-
+        this.cleanupField()
     }
 
     collectCorn (position) {
+        console.log(this.corns)
         this.corns.forEach((element, index) => {
             if(element.position.is(position) && element.count > 0){
                 this.player.corn++
                 element.count --;
+                let cornField = this.fields[this.getFieldIndex(position, this.terrain.dimension.height)]
+                cornField.innerText = element.count
+                this.emit('cornChange')
                 if(element.count == 0){
                     let field = this.getFieldIndex(element.position)
                     if(field == NaN)
@@ -251,6 +265,7 @@ export default class Game{
         this.fields[cornField].classList.add("corn")
         this.fields[cornField].innerText = "1"
         this.player.corn--
+        this.emit('cornChange')
     }
 
     getCornFromPos(position){

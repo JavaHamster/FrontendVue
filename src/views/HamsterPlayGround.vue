@@ -58,7 +58,7 @@ beforeMount() {
 },
 mounted() {
     this.game = this.newGame()
-    
+    this.game.on('cornChange', (event) => this.cornChanged(event))
     console.info("loaded game object")
 },
 methods : {
@@ -100,37 +100,25 @@ methods : {
         this.game = this.newGame()
     },
     loadTer(e){
+        console.log(e)
         this.game.createEntityObj(e)
         this.loaded_terrain_obj = e
     },
     async submitCode(e){        
         for(let prop in this.loaded_terrain_obj){
-            e.hamster[prop] = this.loaded_terrain_obj[prop]
+            if(prop != 'program'){
+                e.hamster[prop] = this.loaded_terrain_obj[prop]
+            }
         }
+
         let result = await request_(this.hostname + "/hamster/newTerrain", e, 'POST')
-        
+        console.log(result)
         this.game.handleResponse(result)
+    },
+    cornChanged(event){
+        alert("CornChanged")
     }
-    // terObjToString(obj){
-    //     // let output = `${obj.laenge}\n${obj.breite}\n`
-    //     // let field = ""
-    //     // for(let y = 0; y < obj.laenge; y++){
-    //     //     for(let x = 0; x < obj.breite; x++){
-    //     //         field += " "
-    //     //     }
-    //     //     field += "\n"
-    //     // }
-        
-    //     // let lines = field.split("\n")
-        
-    //     // for(let iWall = 0; iWall < obj.wall.length; iWall++){
-    //     //     lines[obj.wall[iWall][1]][obj.wall[iWall][0]] = "#"
-    //     // }
 
-    //     // // for(let iCorn = 0; iCorn < obj.corn.length; iCorn++){
-
-    //     // // }
-    // }
 }
 }
 </script>

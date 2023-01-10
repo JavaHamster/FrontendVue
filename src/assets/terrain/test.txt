@@ -1,16 +1,9 @@
-10
-10
-##        
->         
-  *       
-  *       
-          
-          
-          
-          
-          
-          
-0
-1
-1
-0
+void main(){
+	vor();
+  vor();
+  nimm();
+  linksUm();
+  linksUm();
+  vor();
+  vor();
+}

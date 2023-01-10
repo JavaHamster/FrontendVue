@@ -1,11 +1,17 @@
 <template>
-  <section class="playground-territory-selector-cotnainer">
-    <select v-model="selectedTer">
-        <option value="Select Terrain">Select Terrain</option>
-        <option v-for="ter in terList" :key="ter.terrainName" :value="ter.terrainName">{{ ter.terrainName }}</option>
-    </select>
-    <button class="btn load-ter" @click="loadTer">Load Terrain</button>
+  <section class="playground-territory-selector-cotnainer" >
+    <div v-if="territories_there">
+        <select v-model="selectedTer">
+            <option value="Select Terrain">Select Terrain</option>
+            <option v-for="ter in terList" :key="ter.terrainName" :value="ter.terrainName">{{ ter.terrainName }}</option>
+        </select>
+        <button class="btn load-ter" @click="loadTer">Load Terrain</button>
+    </div>
+    <div v-else>
+        <p class="msg">No Territories found</p>
+    </div>
   </section>
+  
 </template>
 
 <script>
@@ -16,7 +22,8 @@ export default {
                 type: Array,
                 default: []
             },
-            selectedTer: 'Select Terrain'
+            selectedTer: 'Select Terrain',
+            territories_there: false
         }
     },
     methods: {
@@ -28,7 +35,18 @@ export default {
         }
     },
     beforeMount(){
-        this.terList = JSON.parse(localStorage.getItem('territories'))
+        try{
+            this.terList = JSON.parse(localStorage.getItem('territories'))
+            this.territories_there = this.terList.length != 0
+        }catch(error){
+            if(error instanceof SyntaxError){
+                localStorage.removeItem('territories')
+                this.territories_there = false
+            }
+
+
+
+        }
     }
 }
 </script>

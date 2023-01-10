@@ -53,7 +53,7 @@
             program: this.value
           }
         }
-
+        console.log(this.value)
         // this.$parent.handleServerResponse(await request_(this.hostname + "hamster/defaultTerrain", reqObj, "post"))
         this.$emit('submitted', reqObj)
       }
