@@ -2,7 +2,6 @@
 <template>
   <div class="container">
     <button @click="clickevent()" class="btn" v-text="name"></button>
-    <p>{{ get }}</p>
   </div>
 </template>
 
@@ -14,7 +13,7 @@ export default {
 
   data() {
     return {
-      get: null,
+      get: "",
       html_methods: {
         GET: "get",
         POST: "post",
@@ -65,11 +64,14 @@ export default {
         .then(function (response) {
           return JSON.stringify(response.data);
         })
-        .then(json => this.get = json)
+        .then(json => this.emitResponse(json))
         .catch(function (error) {
            console.log(JSON.stringify(error.data));
         });
     },
+    emitResponse(response){
+      this.$emit('onResponse', response)
+    }
   },
 };
 </script>

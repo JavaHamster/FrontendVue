@@ -1,3 +1,4 @@
+import store from '../store'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
@@ -19,23 +20,41 @@ const routes = [
   {
     path: '/playground',
     name: 'Play Ground',
-    component: () => import('../views/HamsterPlayGround.vue')
+    component: () => import('../views/HamsterPlayGround.vue'),
+    meta: {requiresAuth: true}
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('../views/LoginView.vue'),
+    beforeEnter: (to, from, next)=> {
+      if(store.getters['auth/isLoggedIn']){
+        next('/')
+      }else{
+        next()
+      }
+    }
   },
   {
     path: '/gamebuilder',
     name: "Builder",
-    component: () => import('../views/GameBuilder.vue')
+    component: () => import('../views/GameBuilder.vue'),
+    meta: {requiresAuth: true}
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  beforeEach: ((to, from, next) => {
+    if(to.meta.requiresAuth && !store.getters['auth/isLoggedIn']){
+      next('/login')
+    } else {
+      next()
+    }
+  })
 })
+
+
 
 export default router

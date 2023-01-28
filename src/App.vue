@@ -2,35 +2,53 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/playground">Playground</router-link> |
-    <router-link to="/login">Login</router-link> | 
-    <router-link to="/gamebuilder">Build Game</router-link> 
+    <router-link v-if="isLoggedIn" to="/playground">Playground</router-link> |
+    <router-link v-if="!isLoggedIn" to="/login">Login</router-link> | 
+    <router-link v-if="isLoggedIn" to="/gamebuilder">Build Game</router-link> 
   </nav>
-  <!-- <RestButton :name="'Log Out'" :link="this.hostname + 'user/logout'" :method="get" ></RestButton> -->
-  <button @click="logout()" class="btn">Log Out</button>
+  <RestButton v-if="isLoggedIn" name="Log Out" :link="this.hostname + 'logout'" method="get" @onResponse="logOutResponse($event)"></RestButton>
+  <p v-if="$store.state.isInactive">
+    Last interaction: {{ $store.getters.lastInteraction }}
+  </p>
+  <!-- <button @click="logout()" v-if="isLoggedIn" class="btn">Log Out</button> -->
   <router-view/>
 </template>
 
 <script>
 /*eslint-disable */
 import RestButton from "@/components/UI/RestButton.vue"
+
 export default {
   components: {
     RestButton
   },
+  computed: {
+    isLoggedIn(){
+      return this.$store.getters['auth/isLoggedIn']
+    }
+  },
   data(){
     return {
-      gameBuilder_Switches: []
+      gameBuilder_Switches: [],
     }
   },
   methods: {
-    async logout(){
-      try {
-        fetch(this.hostname + "user/logout")
-      } catch (error) {
-        alert("ERROR")
-      }
+    updateInteraction() {
+      this.$store.commit('updateInteraction')
+    },
+    logOutResponse(e){
+      if(e == '""')
+        this.$store.dispatch('auth/logout')
     }
+  },
+  mounted(){
+    window.addEventListener('mousemove', this.updateInteraction);
+    window.addEventListener('keydown', this.updateInteraction);
+    this.$store.dispatch('checkInactivity')
+  },
+  beforeUnmount(){
+    window.removeEventListener('mousemove', this.updateInteraction);
+    window.removeEventListener('keydown', this.updateInteraction);
   }
 }
 </script>

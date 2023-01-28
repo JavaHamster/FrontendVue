@@ -116,7 +116,7 @@ methods : {
         this.game.handleResponse(result)
     },
     cornChanged(event){
-        alert("CornChanged")
+        alert("CornChanged" + event)
     }
 
 }

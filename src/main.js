@@ -12,9 +12,6 @@ const app = createApp(App)
 const rootApp = app.use(store)
 
 
-rootApp.use(router)
-    .mount('#app')
-
 app.config.globalProperties.hostname = "https://localhost/api/"
 // app.config.globalProperties.hostname = "https://10.10.208.197/api/"
 // app.config.globalProperties.hostname = "https://os-beyond.at/api/"
@@ -26,3 +23,8 @@ app.config.globalProperties.entity_symbols = Object.freeze({
     WALL: "#",
     CORN: "*"
 })
+
+rootApp.use(router)
+    .mount('#app')
+
+
