@@ -6,6 +6,9 @@ import store from './store'
 
 import { checkValue } from './assets/js/utils'
 
+//eslint-disable-next-line
+import swal from 'sweetalert'
+
 const app = createApp(App)
     
 

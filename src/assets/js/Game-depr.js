@@ -136,7 +136,7 @@ export default class Game{
             return -1
         
         if(!response.hasOwnProperty("finished")){
-            alert("Response Error")
+            swal("Ooops","Response Error", "error")
             return -1
         }
 
@@ -246,9 +246,7 @@ export default class Game{
             alert("No corn in inventory")
             return;
         }
-
-        alert(position.getPosString())
-
+        
         let cornField = this.getFieldIndex(position)
         let corn = this.getCornFromPos(position)
         if(typeof corn !== 'undefined' && corn != null && corn != -1){
