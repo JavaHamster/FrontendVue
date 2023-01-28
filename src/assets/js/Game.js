@@ -34,12 +34,9 @@ export default class Game extends EventEmitter{
     }
 
     initCommands(){
-        let game_object = Object.create(this)
-        console.log(game_object)
-        console.log(this)
         this.commandCreator.createCommand("1", () => {
             this.moveForward()
-        }, "Move forward by one field", game_object)
+        }, "Move forward by one field")
 
         this.commandCreator.createCommand("2", () => {
             let currentDirection = this.player.direction
@@ -50,19 +47,19 @@ export default class Game extends EventEmitter{
 
             this.player.direction = currentDirection
             this.updatePlayer()
-        }, "Player turns left", game_object)
+        }, "Player turns left")
         
         this.commandCreator.createCommand("3", () => {
             this.storeCorn(this.player.position)
-        }, "Put down a corn if able", game_object)
+        }, "Put down a corn if able")
 
         this.commandCreator.createCommand("4", () =>  {
             this.collectCorn(new Vector2D(this.player.position.x, this.player.position.y)) 
-        }, "Pick up 1 Corn if available", game_object)
+        }, "Pick up 1 Corn if available")
 
         this.commandCreator.createCommand("5", () => {
             console.warn("Action of Command with ID: " + this.id + " is undefined")
-        }, "Unused for now", game_object)
+        }, "Unused for now")
         this.commandCreator.createCommand("working", () => {
             console.log("Finished!")
         }, "Success Message")
@@ -299,10 +296,7 @@ export default class Game extends EventEmitter{
             }, index * this.renderDelay)
             
         });
-        setTimeout(() => {
-            this.fields[this.player.currentFieldIndex].innerText = this.player.corn
-        }, (Object.keys(response).length-1)*this.renderDelay);
-        console.log("Direction: " + getPlayerDirection(this.player.direction))
+    
         
     }
 

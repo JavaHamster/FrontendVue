@@ -25,7 +25,7 @@ export default createStore({
   actions: {
     checkInactivity({ commit, state }) {
       setInterval(() => {
-        if (Date.now() - state.lastInteraction > 5000) {
+        if (Date.now() - state.lastInteraction > 15 * 60000) {
           commit('setInactivity')
         }
       }, 1000)
