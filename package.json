@@ -16,6 +16,7 @@
     "axios": "^0.27.2",
     "codemirror": "^6.0.1",
     "core-js": "^3.23.1",
+    "js-cookie": "^2.2.1",
     "json5": "^2.2.3",
     "node-polyfill-webpack-plugin": "^2.0.0",
     "raw-loader": "^4.0.2",
@@ -26,7 +27,8 @@
     "vue-codemirror": "^6.1.1",
     "vue-monaco": "^1.2.2",
     "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

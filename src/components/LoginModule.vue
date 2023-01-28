@@ -4,7 +4,7 @@
     <input v-model="username" type="text" placeholder="Username/E-Mail">
     <input v-model="password" type="password" placeholder="Password">
     <button @click="clickevent" class="btn" v-text="name"></button>
-    <p>{{ get }}</p>
+    <!-- <p>{{ get }}</p> -->
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
 
   data() {
     return {
-      get: null,
+      get: "",
       username: "",
       password: ""
     };
@@ -66,11 +66,16 @@ export default {
         .then(function (response) {
           return JSON.stringify(response.data);
         })
-        .then(json => this.get = json)
+        .then(json => this.checkLogin(json))
         .catch(function (error) {
            console.log(JSON.stringify(error.data));
         });
     },
+    checkLogin(json){
+      this.get = json
+      if(json == '""')
+        this.$store.dispatch('auth/login')
+    }
   },
 };
 </script>

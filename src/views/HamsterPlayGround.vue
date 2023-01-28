@@ -117,7 +117,7 @@ methods : {
     },
     //eslint-disable-next-line
     cornChanged(event){
-        alert("CornChanged")
+        alert("CornChanged" + event)
     }
 
 }
