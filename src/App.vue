@@ -28,7 +28,7 @@ export default {
       try {
         fetch(this.hostname + "user/logout")
       } catch (error) {
-        alert("ERROR")
+        swal("Ooops","Logout failed", "error")
       }
     }
   }

@@ -248,7 +248,7 @@ export default class Game extends EventEmitter{
     
     storeCorn(position) {
         if(this.player.corn <= 0){
-            alert("No corn in inventory")
+            swal("", "No corn in inventory", "info")
             return;
         }
 
@@ -289,7 +289,7 @@ export default class Game extends EventEmitter{
             return -1
         
         if(!response.hasOwnProperty("finished")){
-            alert("Response Error")
+            swal("Ooops!","Response Error","error")
             return -1
         }
 

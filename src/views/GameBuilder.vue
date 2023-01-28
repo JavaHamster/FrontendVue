@@ -110,7 +110,7 @@ export default {
         createPlayground(){
 
             if (this.size.width == 1 && this.size.height == 1){
-                alert("Dimension of Playground is to small!")
+                swal("Oops!", "Dimension of Playground is to small!", "error")
                 return;
             }
 
@@ -123,15 +123,15 @@ export default {
                 playground.innerHTML = ''
             }
 
-            playground.addEventListener('mousedown', () => {
+            document.addEventListener('mousedown', () => {
                 this.clicking = true
             })
 
-            playground.addEventListener("mouseup", () => {
+            document.addEventListener("mouseup", () => {
                 this.clicking = false
             })
 
-            playground.addEventListener("mouseleave", () => {
+            document.addEventListener("mouseleave", () => {
                 this.clicking = false
             })
 
@@ -174,6 +174,12 @@ export default {
                 if(element.classList.contains("player")){
                     this.changeDirection()
                     element.setAttribute("direction", getPlayerDirection(this.player_direction))
+                }else{
+                    let playerField = document.querySelector(".player")
+                    playerField.classList = "play-field"
+                    playerField.removeAttribute("direction")
+                    element.classList = "play-field player"
+                    element.setAttribute("direction", getPlayerDirection(this.player_direction))
                 }
                 return;
             }
@@ -214,17 +220,17 @@ export default {
             let player = playground.querySelectorAll(".play-field.player")
 
             if (playground.innerHTML == ""){
-                alert("No Playground generated!")
+                swal("Ooops!","No Playground generated!", "error")
                 return;
             }    
 
             if(player.length <= 0){
-                alert("Select a player")
+                swal("","Select a player","info")
                 return;
             }
 
             if(player.length > 1){
-                alert("Only 1 Player allowed")
+                swal("","Only 1 Player allowed", "info")
                 return;
             }
 

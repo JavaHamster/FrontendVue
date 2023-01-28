@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         login(){  
-            alert(this.hostname)
+            
         },
         showError(message){
             //TODO find another way to add Components

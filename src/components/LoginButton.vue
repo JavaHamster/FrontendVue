@@ -1,8 +1,5 @@
 <template>
-  <div class="login-container">
-    <h1>Login</h1>
-    <input v-model="username" type="text" placeholder="Username/E-Mail">
-    <input v-model="password" type="password" placeholder="Password">
+  <div class="container">
     <button @click="clickevent" class="btn" v-text="name"></button>
     <p>{{ get }}</p>
   </div>
@@ -20,8 +17,17 @@ export default {
   data() {
     return {
       get: null,
-      username: "",
-      password: ""
+      tempUser: {
+      type: Object,
+      default: () => ({
+        username: {
+          type: String,
+        },
+        password: {
+          type: String,
+        }
+      })
+      }
     };
   },
   props: {
@@ -32,21 +38,33 @@ export default {
     link: {
       type: String,
       default: "",
+    },
+    user: {
+      type: Object,
+      default: () => ({
+        username: "",
+        password: ""
+      })
     }
   },
   methods: {
     // TestURL: https://gorest.co.in/public/v2/users
     async clickevent(event) {
-      if (this.checkValue(this.username) || this.checkValue(this.password)){
-        return
+      
+      if (this.user.username == "" && this.user.password == ""){
+        let user_ = this.$parent.getData()
+        this.user.username = user_.username
+        this.user.password = user_.password
       }
 
+      
+       
       axios.defaults.withCredentials=true; 
       var data = JSON.stringify({
-        username: this.username,
-        password: this.password,
+        username: this.user.username,
+        password: this.user.password,
       });
-       
+      
       console.log(this.data)
 
       var config = {
@@ -74,24 +92,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-  .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    input{
-        margin-block: 1rem;
-        height: 40px;
-        width: 250px;
-        font-size: 16px;
-    }
-</style>
