@@ -1,4 +1,4 @@
-import store from '../store'
+import {createStore as store} from '../store'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
@@ -28,6 +28,7 @@ const routes = [
     name: 'Login',
     component: () => import('../views/LoginView.vue'),
     beforeEnter: (to, from, next)=> {
+      console.log(store)
       if(store.getters['auth/isLoggedIn']){
         next('/')
       }else{
@@ -46,13 +47,14 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  beforeEach: ((to, from, next) => {
-    if(to.meta.requiresAuth && !store.getters['auth/isLoggedIn']){
-      next('/login')
-    } else {
-      next()
-    }
-  })
+})
+
+router.beforeEach ((to, from, next) => {
+  if(to.meta.requiresAuth && !store.getters['auth/isLoggedIn']){
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 

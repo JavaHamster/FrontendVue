@@ -16,8 +16,8 @@
 
 <script>
   import { Codemirror } from 'vue-codemirror'
-  import { java } from '@codemirror/lang-java'
-  // import {javascript} from '@codemirror/lang-javascript'
+  // import { java } from '@codemirror/lang-java'
+  import {javascript} from '@codemirror/lang-javascript'
   import { oneDark } from '@codemirror/theme-one-dark'
 
   // Codemirror.
@@ -33,7 +33,7 @@
             void main(){\n\t\n}
             
             `.trim(),
-            extensions: [java(), oneDark],
+            extensions: [javascript(), oneDark],
             value: ""
         }
     },

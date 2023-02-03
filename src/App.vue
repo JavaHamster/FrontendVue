@@ -1,9 +1,9 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link v-if="isLoggedIn" to="/playground">Playground</router-link> |
-    <router-link v-if="!isLoggedIn" to="/login">Login</router-link> | 
+    <router-link to="/">Home | </router-link> 
+    <router-link to="/about">About | </router-link> 
+    <router-link v-if="isLoggedIn" to="/playground">Playground | </router-link> 
+    <router-link v-if="!isLoggedIn" to="/login">Login </router-link>  
     <router-link v-if="isLoggedIn" to="/gamebuilder">Build Game</router-link> 
   </nav>
   <RestButton v-if="isLoggedIn" name="Log Out" :link="this.hostname + 'logout'" method="get" @onResponse="logOutResponse($event)"></RestButton>
@@ -37,8 +37,10 @@ export default {
       this.$store.commit('updateInteraction')
     },
     logOutResponse(e){
-      if(e == '""')
+      if(e == '""'){
         this.$store.dispatch('auth/logout')
+        this.$router.push("/")
+      }
     }
   },
   mounted(){
