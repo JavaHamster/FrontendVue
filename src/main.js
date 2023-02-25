@@ -15,8 +15,9 @@ const store = createStore(app)
 
 const rootApp = app.use(store)
 
+const HOSTNAME = "https://localhost/api/"
 
-app.config.globalProperties.hostname = "https://localhost/api/"
+app.config.globalProperties.hostname = HOSTNAME
 // app.config.globalProperties.hostname = "https://10.10.208.197/api/"
 // app.config.globalProperties.hostname = "https://os-beyond.at/api/"
 
@@ -31,4 +32,7 @@ app.config.globalProperties.entity_symbols = Object.freeze({
 rootApp.use(router)
     .mount('#app')
 
-
+export{
+    HOSTNAME,
+    store
+}

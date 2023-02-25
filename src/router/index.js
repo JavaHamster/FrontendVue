@@ -1,7 +1,6 @@
-import {createStore as store} from '../store'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-
+import {store} from '@/main'
 
 const routes = [
   {
@@ -28,7 +27,6 @@ const routes = [
     name: 'Login',
     component: () => import('../views/LoginView.vue'),
     beforeEnter: (to, from, next)=> {
-      console.log(store)
       if(store.getters['auth/isLoggedIn']){
         next('/')
       }else{
