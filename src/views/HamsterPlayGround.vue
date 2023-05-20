@@ -111,7 +111,8 @@ methods : {
             }
         }
 
-        let result = await request_(this.hostname + "/hamster/newTerrain", e, 'POST')
+        console.log(this.hostname);
+        let result = await request_(this.hostname + "hamster/newTerrain", e, 'POST')
         console.log(result)
         this.game.handleResponse(result)
     },
