@@ -57,7 +57,7 @@ export default {
           "Content-Type": "application/json",
           "Accept": "*/*",
         },
-        withCredentials: false,
+        withCredentials: true,
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
         data: data,
       };

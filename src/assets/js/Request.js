@@ -12,10 +12,11 @@ export async function request_(url, data, method) {
   var config = {
     method: method,
     url: url,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Credentials": true,
-    },
+   headers: {
+        "Access-Control-Allow-Origin" : "*",
+        "Content-Type": "application/json",
+        "Accept": "*/*",
+      },
     withCredentials: true,
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     data: data,
