@@ -41,23 +41,23 @@ export default {
         return
       }
 
-      axios.defaults.withCredentials=true; 
+      axios.defaults.withCredentials=true;
       var data = JSON.stringify({
         username: this.username,
         password: this.password,
       });
        
-      console.log(this.data)
-
+      console.log(data);
+      console.log(this.link);
       var config = {
         method: "post",
         url: this.link,
         headers: {
           "Access-Control-Allow-Origin" : "*",
           "Content-Type": "application/json",
-          "Accept": "*/*", 
+          "Accept": "*/*",
         },
-        withCredentials: true, 
+        withCredentials: false,
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
         data: data,
       };

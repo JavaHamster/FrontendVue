@@ -15,7 +15,7 @@ const store = createStore(app)
 
 const rootApp = app.use(store)
 
-const HOSTNAME = "https://localhost/api/"
+const HOSTNAME = "http://localhost:8080/api/"
 
 app.config.globalProperties.hostname = HOSTNAME
 // app.config.globalProperties.hostname = "https://10.10.208.197/api/"
